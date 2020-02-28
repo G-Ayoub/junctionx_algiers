@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:junctionx_algiers/screens/signup_2.dart';
 
 class signUpPage extends StatefulWidget {
 
@@ -130,7 +131,12 @@ class _signUpPageState extends State<signUpPage> {
                     color: widget._accentColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(5.0)),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => signup2Page()),
+                      );
+                    },
                     child: Text(
                       "NEXT",
                       style: TextStyle(fontSize: 20),
