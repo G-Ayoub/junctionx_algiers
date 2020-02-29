@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'login.dart';
+
 class signup3Page extends StatelessWidget {
   final Color _backgroundColor = const Color(0xff1c1e21);
   final Color _textColor = const Color(0xfff9fcfe);
@@ -59,7 +61,12 @@ class signup3Page extends StatelessWidget {
                   color: _accentColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(5.0)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => loginPage()),
+                    );
+                  },
                   child: Text(
                     "DONE",
                     style: TextStyle(fontSize: 20),
@@ -73,8 +80,8 @@ class signup3Page extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 15),
                   child: Image.asset(
-                    "assets/img/junctionX.png",
-                    width: 150,
+                    "assets/img/junctionx_algiers_white_oneline.png",
+                    width: 200,
                   ),
                 ),
               ),

@@ -52,7 +52,7 @@ class _signUpPageState extends State<signUpPage> {
                       hintColor: Colors.white),
                   child: new TextField(
                     //controller: ndInput,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           labelText: "First Name",
                           filled: true,
@@ -71,7 +71,7 @@ class _signUpPageState extends State<signUpPage> {
                       hintColor: Colors.white),
                   child: new TextField(
                     //controller: ndInput,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           labelText: "Last Name",
                           filled: true,
@@ -90,7 +90,7 @@ class _signUpPageState extends State<signUpPage> {
                       hintColor: Colors.white),
                   child: new TextField(
                     //controller: ndInput,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                           labelText: "Email Address",
                           filled: true,
@@ -110,7 +110,7 @@ class _signUpPageState extends State<signUpPage> {
                   child: new TextField(
                     //controller: ndInput,
                       obscureText: true,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           labelText: "Password",
                           filled: true,
@@ -150,8 +150,8 @@ class _signUpPageState extends State<signUpPage> {
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 15),
                     child: Image.asset(
-                      "assets/img/junctionX.png",
-                      width: 150,
+                      "assets/img/junctionx_algiers_white_oneline.png",
+                      width: 200,
                     ),
                   ),
                 ),

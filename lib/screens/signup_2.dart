@@ -39,7 +39,7 @@ class signup2Page extends StatelessWidget {
                     primaryColor: _accentColor, hintColor: Colors.white),
                 child: new TextField(
                     //controller: ndInput,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         labelText: "Table number",
                         filled: true,
@@ -57,7 +57,7 @@ class signup2Page extends StatelessWidget {
                     primaryColor: _accentColor, hintColor: Colors.white),
                 child: new TextField(
                     //controller: ndInput,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         labelText: "Your function",
                         filled: true,
@@ -75,7 +75,7 @@ class signup2Page extends StatelessWidget {
                     primaryColor: _accentColor, hintColor: Colors.white),
                 child: new TextField(
                     //controller: ndInput,
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         labelText: "Fav Movie",
                         filled: true,
@@ -135,8 +135,8 @@ class signup2Page extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 15),
                   child: Image.asset(
-                    "assets/img/junctionX.png",
-                    width: 150,
+                    "assets/img/junctionx_algiers_white_oneline.png",
+                    width: 200,
                   ),
                 ),
               ),
