@@ -17,12 +17,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
         Duration(seconds: 3),
-        () =>
-            Navigator.pushReplacement(
+        () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => loginPage()),
-            )
-    );
+            ));
   }
 
   @override
@@ -36,7 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Align(
                 alignment: Alignment.center,
                 child: Image.asset(
-                    'assets/img/junctionx_algiers_white_oneline.png',width: 200,)),
+                  'assets/img/junctionx_algiers_white_oneline.png',
+                  width: 200,
+                )),
           ),
           Expanded(
             flex: 2,

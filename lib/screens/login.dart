@@ -1,6 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:junctionx_algiers/screens/notification.dart';
+import 'package:junctionx_algiers/screens/profile.dart';
 import 'package:junctionx_algiers/screens/signup.dart';
+
+import 'event_schedule.dart';
 
 class loginPage extends StatefulWidget {
   @override
@@ -95,10 +99,10 @@ class _loginPageState extends State<loginPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(5.0)),
                     onPressed: () {
-                      /*Navigator.push(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => signup2Page()),
-                      );*/
+                        MaterialPageRoute(builder: (context) => NotificationPage()),
+                      );
                     },
                     child: Text(
                       "SIGN IN",
