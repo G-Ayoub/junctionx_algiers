@@ -223,7 +223,7 @@ class _homePageState extends State<homePage> {
               Padding(
                 padding: const EdgeInsets.only(left:20,right: 20),
                 child: Container(
-                  height: 260,
+                  height: 220,
                   color: Colors.grey[850],
                   child: Stack(
                     children: <Widget>[
@@ -412,6 +412,8 @@ class LabelText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 100,
+      height: 120,
       margin: EdgeInsets.symmetric(horizontal: 5),
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -424,7 +426,7 @@ class LabelText extends StatelessWidget {
           Text(
             '$value',
             style: TextStyle(
-                color: Colors.white, fontSize: 55, fontWeight: FontWeight.bold),
+                color: Colors.white, fontSize: 46, fontWeight: FontWeight.bold),
           ),
           Text(
             '$label',
