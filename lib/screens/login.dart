@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:junctionx_algiers/screens/home_page.dart';
 import 'package:junctionx_algiers/screens/notification.dart';
 import 'package:junctionx_algiers/screens/profile.dart';
 import 'package:junctionx_algiers/screens/signup.dart';
@@ -101,7 +102,7 @@ class _loginPageState extends State<loginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NotificationPage()),
+                        MaterialPageRoute(builder: (context) => homePage()),
                       );
                     },
                     child: Text(

@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:junctionx_algiers/screens/chatScreen.dart';
+import 'package:junctionx_algiers/screens/event_schedule.dart';
+import 'package:junctionx_algiers/screens/notification.dart';
+import 'package:junctionx_algiers/screens/profile.dart';
 import 'global.dart';
 import 'widgets/widgets.dart';
 
@@ -275,6 +278,10 @@ class _homePageState extends State<homePage> {
                     onPressed: () {
                       setState(() {
                         currentTab = 0;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EventSchedulePage())
+                        );
                       });
                     },
                     child: Column(
@@ -335,7 +342,10 @@ class _homePageState extends State<homePage> {
                     onPressed: () {
                       setState(() {
                         currentTab = 2;
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NotificationPage())
+                        );
                       });
                     },
                     child: Column(
@@ -360,6 +370,10 @@ class _homePageState extends State<homePage> {
                     onPressed: () {
                       setState(() {
                         currentTab = 3;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>ProfilePage())
+                        );
                       });
                     },
                     child: Column(
