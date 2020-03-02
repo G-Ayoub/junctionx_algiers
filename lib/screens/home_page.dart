@@ -96,28 +96,10 @@ class _homePageState extends State<homePage> {
 
     return Scaffold(
       appBar:AppBar(
-        backgroundColor: widget._backgroundColor,
-        iconTheme: IconThemeData(color: Colors.black54),
-        centerTitle: true,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(width: 15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  "assets/img/junctionx_algiers.png",
-                  width: 250,
-                ),
-              ],
-            )
-          ],
-        ),
-        actions: <Widget>[
-
-        ],
+      title: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
+          width: 200),
+      backgroundColor: widget._backgroundColor,
+      iconTheme: IconThemeData(color: widget._accentColor),
       ),
       backgroundColor: widget._backgroundColor,
       body: SingleChildScrollView(
@@ -266,6 +248,7 @@ class _homePageState extends State<homePage> {
         notchMargin: 10,
         color: Colors.grey[850],
         child: Container(
+          width: MediaQuery.of(context).size.width-20,
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -411,31 +394,32 @@ class LabelText extends StatelessWidget {
   final Color _accentColor = const Color(0xfff9a61b);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 120,
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: _accentColor,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(
-            '$value',
-            style: TextStyle(
-                color: Colors.white, fontSize: 46, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '$label',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+    return Expanded(
+      child: Container(
+        height: 105,
+        margin: EdgeInsets.symmetric(horizontal: 5),
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: _accentColor,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              '$value',
+              style: TextStyle(
+                  color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
+            Text(
+              '$label',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -19,28 +19,10 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       backgroundColor: widget._backgroundColor,
       appBar: AppBar(
+        title: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
+            width: 200),
         backgroundColor: widget._backgroundColor,
-        iconTheme: IconThemeData(color: Colors.black54),
-        centerTitle: true,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(width: 15),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  "assets/img/junctionx_algiers.png",
-                  width: 250,
-                ),
-              ],
-            )
-          ],
-        ),
-        actions: <Widget>[
-
-        ],
+        iconTheme: IconThemeData(color: widget._accentColor),
       ),
       body: Stack(
         children: <Widget>[
