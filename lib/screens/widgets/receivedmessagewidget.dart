@@ -41,7 +41,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
                 child: Text(
                   "${messages[i]['message']}",
                   style: Theme.of(context).textTheme.body1.apply(
-                        color: Colors.black87,
+                        color: Colors.white,
                       ),
                 ),
               ),

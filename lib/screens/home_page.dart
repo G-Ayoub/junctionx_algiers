@@ -14,6 +14,7 @@ class homePage extends StatefulWidget {
   final Color _accentColor = const Color(0xfff9a61b);
   final Color _textFieldBackgroundColor = const Color(0xff797979);
   final Color _cardColor = const Color(0xff1cf200);
+
   @override
   _homePageState createState() => _homePageState();
 }
@@ -25,9 +26,8 @@ class _homePageState extends State<homePage> {
   Timer timer;
   int currentTab = 0; // to
 
-
   void handleTick() {
-    if (isActive) {
+    if (this.mounted) {
       setState(() {
         secondsPassed = secondsPassed + 1;
       });
@@ -47,25 +47,20 @@ class _homePageState extends State<homePage> {
           child: Column(
             children: <Widget>[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Image.asset(
                     "assets/img/junction.png",
                     width: 40,
                   ),
-                  SizedBox(
-                    width: 20,
-                  ),
                   Text(
                     "JunctionX",
-                    style: TextStyle(color: widget._textColor, fontSize: 10),
+                    style: TextStyle(color: widget._textFieldBackgroundColor, fontSize: 10),
                   ),
-                  SizedBox(
-                    width: 30,
-                  ),
+                  Spacer(),
                   Text(
                     "10 min ago",
-                    style: TextStyle(color: widget._textColor, fontSize: 10),
+                    style: TextStyle(color: widget._textFieldBackgroundColor, fontSize: 10),
                   ),
                 ],
               ),
@@ -95,11 +90,15 @@ class _homePageState extends State<homePage> {
     int hours = secondsPassed ~/ (60 * 60);
 
     return Scaffold(
-      appBar:AppBar(
-      title: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
-          width: 200),
-      backgroundColor: widget._backgroundColor,
-      iconTheme: IconThemeData(color: widget._accentColor),
+      extendBody: true,
+      appBar: AppBar(
+        title: Center(
+          child: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
+              width: 200),
+        ),
+        backgroundColor: widget._backgroundColor,
+        automaticallyImplyLeading: false,
+        //iconTheme: IconThemeData(color: widget._accentColor),
       ),
       backgroundColor: widget._backgroundColor,
       body: SingleChildScrollView(
@@ -110,136 +109,139 @@ class _homePageState extends State<homePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Center(
-                child: Text(
-                  "TIME LEFT FOR SUBMISSION",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                      color: widget._accentColor),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    "TIME LEFT FOR SUBMISSION",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                        color: widget._accentColor),
+                  ),
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      LabelText(
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, left: 22, right: 22),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        LabelText(
                           label: 'HRS',
-                          value: hours.toString().padLeft(2, '0')),
-                      Text(
-                        ":",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 50),
-                      ),
-                      LabelText(
-                          label: 'MIN',
-                          value: minutes.toString().padLeft(2, '0')),
-                      Text(
-                        ":",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 50),
-                      ),
-                      LabelText(
-                          label: 'SEC',
-                          value: seconds.toString().padLeft(2, '0')),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
+                          value: hours.toString().padLeft(2, '0'),
+                        ),
+                        Text(
+                          ":",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28),
+                        ),
+                        LabelText(
+                            label: 'MIN',
+                            value: minutes.toString().padLeft(2, '0')),
+                        Text(
+                          ":",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28),
+                        ),
+                        LabelText(
+                            label: 'SEC',
+                            value: seconds.toString().padLeft(2, '0')),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20, top: 20),
                 child: Text(
                   "NOTIFICATIONS",
                   style: TextStyle(
                       color: widget._textColor,
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
               Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(top: 10),
                 child: Container(
                   height: 110,
                   child: ListView(
                     // This next line does the trick.
                     scrollDirection: Axis.horizontal,
                     children: <Widget>[
+                      Padding(padding: EdgeInsets.only(left: 22),),
                       createCard(),
                       SizedBox(width: 10),
                       createCard(),
                       SizedBox(width: 10),
                       createCard(),
+                      Padding(padding: EdgeInsets.only(right: 22),),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20,),
               Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20,top: 20),
                 child: Text(
                   "HUB",
                   style: TextStyle(
                       color: widget._textColor,
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 20,),
               Padding(
-                padding: const EdgeInsets.only(left:20,right: 20),
-                child: Container(
-                  height: 220,
+                padding: const EdgeInsets.only(left: 20, right: 20,top: 10),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
                   color: Colors.grey[850],
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned.fill(
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: ListView.builder(
-                                padding: const EdgeInsets.all(15),
-                                itemCount: messages.length,
-                                itemBuilder: (ctx, i) {
-                                  if (messages[i]['status'] == MessageType.received) {
-                                    return ReceivedMessagesWidget(i: i);
-                                  } else {
-                                    return SentMessageWidget(i: i);
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                  child: Container(
+                    height: 220,
+                    //color: Colors.grey[850],
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(15),
+                            itemCount: messages.length,
+                            itemBuilder: (ctx, i) {
+                              if (messages[i]['status'] ==
+                                  MessageType.received) {
+                                return ReceivedMessagesWidget(i: i);
+                              } else {
+                                return SentMessageWidget(i: i);
+                              }
+                            },
+                          ),
                         ),
-                      ),
-
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
           ),
         ),
-      ), // This trai
+      ),
+      // This trai
       floatingActionButton: FloatingActionButton(
         backgroundColor: widget._accentColor,
-        child: Icon(Icons.info_outline,size: 30,),
+        child: Icon(
+          Icons.info_outline,
+          size: 30,
+        ),
         onPressed: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -263,8 +265,8 @@ class _homePageState extends State<homePage> {
                         currentTab = 0;
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => EventSchedulePage())
-                        );
+                            MaterialPageRoute(
+                                builder: (context) => EventSchedulePage()));
                       });
                     },
                     child: Column(
@@ -272,9 +274,13 @@ class _homePageState extends State<homePage> {
                       children: <Widget>[
                         Icon(
                           Icons.calendar_today,
-                          color: currentTab == 0 ? widget._accentColor : Colors.grey,
+                          color: currentTab == 0
+                              ? widget._accentColor
+                              : Colors.grey,
                         ),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Schedule',
                           style: TextStyle(
@@ -291,8 +297,8 @@ class _homePageState extends State<homePage> {
                         currentTab = 1;
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ChatScreen())
-                        );
+                            MaterialPageRoute(
+                                builder: (context) => ChatScreen()));
                       });
                     },
                     child: Column(
@@ -300,9 +306,13 @@ class _homePageState extends State<homePage> {
                       children: <Widget>[
                         Icon(
                           Icons.chat,
-                          color: currentTab == 1 ? widget._accentColor : Colors.grey,
+                          color: currentTab == 1
+                              ? widget._accentColor
+                              : Colors.grey,
                         ),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Hub',
                           style: TextStyle(
@@ -327,8 +337,8 @@ class _homePageState extends State<homePage> {
                         currentTab = 2;
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NotificationPage())
-                        );
+                            MaterialPageRoute(
+                                builder: (context) => NotificationPage()));
                       });
                     },
                     child: Column(
@@ -336,9 +346,13 @@ class _homePageState extends State<homePage> {
                       children: <Widget>[
                         Icon(
                           Icons.notifications,
-                          color: currentTab == 2 ? widget._accentColor : Colors.grey,
+                          color: currentTab == 2
+                              ? widget._accentColor
+                              : Colors.grey,
                         ),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Notifications',
                           style: TextStyle(
@@ -355,8 +369,8 @@ class _homePageState extends State<homePage> {
                         currentTab = 3;
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) =>ProfilePage())
-                        );
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage()));
                       });
                     },
                     child: Column(
@@ -364,9 +378,13 @@ class _homePageState extends State<homePage> {
                       children: <Widget>[
                         Icon(
                           Icons.person,
-                          color: currentTab == 3 ? widget._accentColor: Colors.grey,
+                          color: currentTab == 3
+                              ? widget._accentColor
+                              : Colors.grey,
                         ),
-                        SizedBox(height: 5,),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text(
                           'Profie',
                           style: TextStyle(
@@ -392,25 +410,34 @@ class LabelText extends StatelessWidget {
   final String label;
   final String value;
   final Color _accentColor = const Color(0xfff9a61b);
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 105,
-        margin: EdgeInsets.symmetric(horizontal: 5),
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: _accentColor,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              '$value',
-              style: TextStyle(
-                  color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
-            ),
+
+    return Container(
+      width: 80,
+      height: 80,
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      //padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: _accentColor,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            '$value',
+            style: TextStyle(
+                color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            '$label',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            )),
             Text(
               '$label',
               style: TextStyle(
@@ -420,7 +447,6 @@ class LabelText extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
