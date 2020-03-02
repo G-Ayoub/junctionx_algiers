@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'global.dart';
 import 'widgets/widgets.dart';
@@ -13,12 +12,21 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool _showBottom = false;
+  final Color _accentColor = const Color(0xfff9a61b);
+  var _sendMsg = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: widget._backgroundColor,
       appBar: AppBar(
+        title: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
+            width: 200),
+        backgroundColor: widget._backgroundColor,
+        iconTheme: IconThemeData(color: _accentColor),
+        //iconTheme: IconThemeData(color: widget._accentColor),
+      ),
+      /*appBar: AppBar(
         backgroundColor: widget._backgroundColor,
         iconTheme: IconThemeData(color: Colors.black54),
         centerTitle: true,
@@ -41,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: <Widget>[
 
         ],
-      ),
+      ),*/
       body: Stack(
         children: <Widget>[
           Positioned.fill(
@@ -68,7 +76,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       Container(
                         padding: const EdgeInsets.all(15.0),
                         decoration: BoxDecoration(
-                            color: widget._textFieldBackgroundColor, shape: BoxShape.circle),
+                            color: widget._textFieldBackgroundColor,
+                            shape: BoxShape.circle),
                         child: InkWell(
                           child: Icon(
                             Icons.photo_camera,
@@ -81,32 +90,27 @@ class _ChatScreenState extends State<ChatScreen> {
                           },
                         ),
                       ),
-                      SizedBox(width: 15,),
+                      SizedBox(
+                        width: 15,
+                      ),
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
                             color: widget._textFieldBackgroundColor,
                             borderRadius: BorderRadius.circular(35.0),
-                            boxShadow: [
-                              BoxShadow(
-                                  offset: Offset(0, 3),
-                                  blurRadius: 5,
-                                  color: Colors.grey)
-                            ],
                           ),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                        hintText: "Type Something...",
-                                        border: InputBorder.none),
-                                  ),
+                            child: TextField(
+                              controller: _sendMsg,
+                              decoration: InputDecoration(
+                                hintText: "Type Something...",
+                                border: InputBorder.none,
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.send),
+                                  onPressed: (){_onSentButtonPressed();},
                                 ),
-
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -128,51 +132,55 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           _showBottom
               ? Positioned(
-            bottom: 90,
-            left: 25,
-            right: 25,
-            child: Container(
-              padding: EdgeInsets.all(25.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(0, 5),
-                      blurRadius: 15.0,
-                      color: Colors.grey)
-                ],
-              ),
-              child: GridView.count(
-                mainAxisSpacing: 21.0,
-                crossAxisSpacing: 21.0,
-                shrinkWrap: true,
-                crossAxisCount: 3,
-                children: List.generate(
-                  icons.length,
-                      (i) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: Colors.grey[200],
-                        border: Border.all(color: myGreen, width: 2),
+                  bottom: 90,
+                  left: 25,
+                  right: 25,
+                  child: Container(
+                    padding: EdgeInsets.all(25.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                            offset: Offset(0, 5),
+                            blurRadius: 15.0,
+                            color: Colors.grey)
+                      ],
+                    ),
+                    child: GridView.count(
+                      mainAxisSpacing: 21.0,
+                      crossAxisSpacing: 21.0,
+                      shrinkWrap: true,
+                      crossAxisCount: 3,
+                      children: List.generate(
+                        icons.length,
+                        (i) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              color: Colors.grey[200],
+                              border: Border.all(color: myGreen, width: 2),
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                icons[i],
+                                color: myGreen,
+                              ),
+                              onPressed: () {},
+                            ),
+                          );
+                        },
                       ),
-                      child: IconButton(
-                        icon: Icon(
-                          icons[i],
-                          color: myGreen,
-                        ),
-                        onPressed: () {},
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          )
+                    ),
+                  ),
+                )
               : Container(),
         ],
       ),
     );
+  }
+
+  void _onSentButtonPressed() {
+    print("search button clicked");
   }
 }
 
