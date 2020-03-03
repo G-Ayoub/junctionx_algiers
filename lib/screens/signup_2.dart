@@ -234,13 +234,19 @@ class _signup2PageState extends State<signup2Page> {
                       shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(5.0)),
                       onPressed: () {
-                        _emailSignUp(
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => signup3Page(
+                            email: this.email,
                             firstName: this.firstName,
                             lastName: this.lastName,
-                            email: this.email,
                             password: this.password,
-                            context: context);
-
+                            aboutYou: _aboutYou.text,
+                            favMovie: _favMovie.text,
+                            function: _function.text,
+                            tableNumber: _tableNumber.text,
+                          )),
+                        );
                       },
                       child: Text(
                         "NEXT",
