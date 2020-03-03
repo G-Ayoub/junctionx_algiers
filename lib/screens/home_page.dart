@@ -108,7 +108,6 @@ class _homePageState extends State<homePage> {
     int hours = secondsPassed ~/ (60 * 60);
     final userId = appState?.firebaseUserAuth?.uid ?? '';
     final email = appState?.firebaseUserAuth?.email ?? '';
-    final firstName = appState?.user?.firstName ?? '';
     final lastName = appState?.user?.lastName ?? '';
     final settingsId = appState?.settings?.settingsId ?? '';
 
@@ -466,13 +465,6 @@ class LabelText extends StatelessWidget {
               color: Colors.black,
               fontWeight: FontWeight.bold,
             )),
-            Text(
-              '$label',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ],
         ),
     );

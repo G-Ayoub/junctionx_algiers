@@ -45,7 +45,7 @@ class User {
         firstName: json["firstName"],
         lastName: json["lastName"],
         email: json["email"],
-        tableNumber:json["tableNuMBER"],
+        tableNumber:json["tableNumber"],
         function:json["function"],
         favMovie:json["favMovie"],
         aboutYou:json["aboutYou"],
