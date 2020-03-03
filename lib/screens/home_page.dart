@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:junctionx_algiers/models/state.dart';
 import 'package:junctionx_algiers/screens/chatScreen.dart';
 import 'package:junctionx_algiers/screens/event_schedule.dart';
 import 'package:junctionx_algiers/screens/notification.dart';
 import 'package:junctionx_algiers/screens/profile.dart';
+import 'package:junctionx_algiers/util/state_widget.dart';
 import 'global.dart';
+import 'login.dart';
 import 'widgets/widgets.dart';
 
 class homePage extends StatefulWidget {
@@ -25,6 +28,8 @@ class _homePageState extends State<homePage> {
   bool isActive = true;
   Timer timer;
   int currentTab = 0; // to
+  StateModel appState;
+  bool _loadingVisible = false;
 
   void handleTick() {
     if (this.mounted) {
@@ -80,6 +85,19 @@ class _homePageState extends State<homePage> {
 
   @override
   Widget build(BuildContext context) {
+    appState = StateWidget.of(context).state;
+    if (!appState.isLoading &&
+        (appState.firebaseUserAuth == null ||
+            appState.user == null ||
+            appState.settings == null)) {
+      return loginPage();
+    } else {
+      if (appState.isLoading) {
+        _loadingVisible = true;
+      } else {
+        _loadingVisible = false;
+      }
+    }
     if (timer == null) {
       timer = Timer.periodic(duration, (Timer t) {
         handleTick();
@@ -88,6 +106,11 @@ class _homePageState extends State<homePage> {
     int seconds = secondsPassed % 60;
     int minutes = secondsPassed ~/ 60;
     int hours = secondsPassed ~/ (60 * 60);
+    final userId = appState?.firebaseUserAuth?.uid ?? '';
+    final email = appState?.firebaseUserAuth?.email ?? '';
+    final firstName = appState?.user?.firstName ?? '';
+    final lastName = appState?.user?.lastName ?? '';
+    final settingsId = appState?.settings?.settingsId ?? '';
 
     return Scaffold(
       extendBody: true,
@@ -98,6 +121,11 @@ class _homePageState extends State<homePage> {
         ),
         backgroundColor: widget._backgroundColor,
         automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.exit_to_app,size: 30,color: Colors.red,),onPressed: (){
+            StateWidget.of(context).logOutUser();
+          },)
+        ],
         //iconTheme: IconThemeData(color: widget._accentColor),
       ),
       backgroundColor: widget._backgroundColor,

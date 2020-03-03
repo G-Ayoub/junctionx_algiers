@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:junctionx_algiers/screens/login.dart';
 
+import 'home_page.dart';
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -19,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Duration(seconds: 3),
         () => Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => loginPage()),
+              MaterialPageRoute(builder: (context) => homePage()),
             ));
   }
 

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "437430861881",
+    "firebase_url": "https://junctionxalgeirs.firebaseio.com",
+    "project_id": "junctionxalgeirs",
+    "storage_bucket": "junctionxalgeirs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:437430861881:android:1995b9357205bbe61e4de8",
+        "android_client_info": {
+          "package_name": "dz.junctionx.algiers.junctionx_algiers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "437430861881-dt1unf67g4jgd93j8lndj58f4899i57m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxZNWi-y8VkKzlzfTHGixqaNwFsgw43bE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "437430861881-dt1unf67g4jgd93j8lndj58f4899i57m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
