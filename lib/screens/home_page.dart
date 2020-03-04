@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:junctionx_algiers/models/state.dart';
@@ -10,6 +11,7 @@ import 'package:junctionx_algiers/util/state_widget.dart';
 import 'global.dart';
 import 'login.dart';
 import 'widgets/widgets.dart';
+import '../screens/widgets/full_image.dart';
 
 class homePage extends StatefulWidget {
   final Color _backgroundColor = const Color(0xff1c1e21);
@@ -28,14 +30,81 @@ class _homePageState extends State<homePage> {
   bool isActive = true;
   Timer timer;
   int currentTab = 0; // to
+  int hours=0,minutes=0,second=0;
   StateModel appState;
   bool _loadingVisible = false;
+  Timer _timer;
+  int seconds;
+  final databaseReference = Firestore.instance;
+  ScrollController _controller = ScrollController();
 
-  void handleTick() {
-    if (this.mounted) {
+
+  @override
+  void initState(){
+// Get the current time
+    var now = DateTime.now();
+    // Get a 2-minute interval
+    var twoHours = now.add(Duration(hours :54)).difference(now);
+    // Get the total number of seconds, 2 minutes for 120 seconds
+    seconds = twoHours.inSeconds;
+    Timer.periodic(Duration(milliseconds: 100), (timer) {
+      if (mounted) {
+        _scrollToBottom();
+        timer.cancel();
+      } else {
+        timer.cancel();
+      }
+    });
+    startTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    cancelTimer();
+  }
+
+  void startTimer() {
+    // Set 1 second callback
+    const period = const Duration(seconds: 1);
+    _timer = Timer.periodic(period, (timer) {
+      // Update interface
       setState(() {
-        secondsPassed = secondsPassed + 1;
+        // minus one second because it calls back once a second
+        seconds--;
       });
+      if (seconds == 0) {
+        // Countdown seconds 0, cancel timer
+        cancelTimer();
+      }
+    });
+  }
+
+  void cancelTimer() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+  Future<void> onSendMessage(String content, int type,String groupChatId,String firstName,String lastName) async {
+    // type: 0 = text, 1 = image, 2 = sticker
+    if (content.trim() != '') {
+      DocumentReference ref = await databaseReference.collection("messages")
+          .add({
+        'id_user': groupChatId,
+        'msg':content,
+        'datetime':DateTime.now(),
+        'nom':firstName+' '+lastName
+      });
+      _scrollToBottom();
+      print(ref.documentID);
+
+
+      //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+    } else {
+      // Fluttertoast.showToast(msg: 'Nothing to send');
     }
   }
 
@@ -83,6 +152,11 @@ class _homePageState extends State<homePage> {
     );
   }
 
+
+  _scrollToBottom() {
+    _controller.jumpTo(_controller.position.maxScrollExtent);
+  }
+
   @override
   Widget build(BuildContext context) {
     appState = StateWidget.of(context).state;
@@ -98,17 +172,15 @@ class _homePageState extends State<homePage> {
         _loadingVisible = false;
       }
     }
-    if (timer == null) {
-      timer = Timer.periodic(duration, (Timer t) {
-        handleTick();
-      });
-    }
-    int seconds = secondsPassed % 60;
-    int minutes = secondsPassed ~/ 60;
-    int hours = secondsPassed ~/ (60 * 60);
+    int hours = seconds ~/ 3600;
+    int minutes = seconds % 3600 ~/ 60;
+    int second = seconds % 60;
+
     final userId = appState?.firebaseUserAuth?.uid ?? '';
     final email = appState?.firebaseUserAuth?.email ?? '';
     final lastName = appState?.user?.lastName ?? '';
+    final firstName = appState?.user?.firstName ?? '';
+    final table = appState?.user?.tableNumber ?? '';
     final settingsId = appState?.settings?.settingsId ?? '';
 
     return Scaffold(
@@ -161,7 +233,7 @@ class _homePageState extends State<homePage> {
                       children: <Widget>[
                         LabelText(
                           label: 'HRS',
-                          value: hours.toString().padLeft(2, '0'),
+                          value: "$hours",
                         ),
                         Text(
                           ":",
@@ -172,7 +244,7 @@ class _homePageState extends State<homePage> {
                         ),
                         LabelText(
                             label: 'MIN',
-                            value: minutes.toString().padLeft(2, '0')),
+                            value: "$minutes"),
                         Text(
                           ":",
                           style: TextStyle(
@@ -182,7 +254,7 @@ class _homePageState extends State<homePage> {
                         ),
                         LabelText(
                             label: 'SEC',
-                            value: seconds.toString().padLeft(2, '0')),
+                            value: "$second"),
                       ],
                     ),
                   ],
@@ -240,18 +312,50 @@ class _homePageState extends State<homePage> {
                     child: Column(
                       children: <Widget>[
                         Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(15),
-                            itemCount: messages.length,
-                            itemBuilder: (ctx, i) {
-                              if (messages[i]['status'] ==
-                                  MessageType.received) {
-                                return ReceivedMessagesWidget(i: i);
-                              } else {
-                                return SentMessageWidget(i: i);
-                              }
-                            },
-                          ),
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: databaseReference
+                                  .collection('messages')
+                                  .orderBy('datetime', descending: false)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return ListView.builder(
+                                    controller: _controller,
+                                    padding: const EdgeInsets.all(15),
+                                    itemCount: snapshot.data.documents.length,
+                                    itemBuilder: (ctx, i) {
+                                      if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
+                                        return SentMessageWidget(i: snapshot.data.documents[i].data["msg"],nom:  snapshot.data.documents[i].data["nom"],imgUrl: "",);
+                                      } else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
+                                        return ReceivedMessagesWidget(i: snapshot.data.documents[i].data["msg"],imgUrl: "",);
+                                      }else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["imgUrl"]!="") {
+                                        return InkWell(
+                                            onTap: (){
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
+                                            },
+                                            child:ReceivedMessagesWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],));
+                                      }else if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["imgUrl"]!="") {
+                                        return InkWell(
+                                            onTap: (){
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
+                                            },
+                                            child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],
+
+                                            ));
+                                      }
+                                    },
+                                  );
+                                } else {
+                                  return SizedBox();
+                                }
+                              },
+                            )
                         ),
                       ],
                     ),
@@ -269,7 +373,9 @@ class _homePageState extends State<homePage> {
           Icons.info_outline,
           size: 30,
         ),
-        onPressed: () {},
+        onPressed: () {
+          onSendMessage("Table $table need help",0, userId, firstName, lastName);
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
