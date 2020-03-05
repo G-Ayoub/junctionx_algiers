@@ -65,7 +65,6 @@ class _signup3PageState extends State<signup3Page> {
   }
 
   Future uploadFile() async {
-    String url;
     await _changeLoadingVisible();
     StorageReference storageReference = FirebaseStorage.instance
         .ref()

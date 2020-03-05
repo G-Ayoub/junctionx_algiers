@@ -1,13 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
+
+
+  @override
+  State<StatefulWidget> createState() => _NotificationPage();
+}
+
+class _NotificationPage extends State<NotificationPage>{
+  final Firestore _db = Firestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
   final Color _backgroundColor = const Color(0xff1c1e21);
   final Color _accentColor = const Color(0xfff9a61b);
   final Color _textFieldBackgroundColor = const Color(0xff797979);
   final Color _textColor = const Color(0xfff9fcfe);
   final Color _eventBtnColor = const Color(0xff24262a);
   final List<String> notification = new List<String>();
-  
+
+
+  @override
+  void initState() {
+    super.initState();
+    _fcm.subscribeToTopic('all');
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        // TODO optional
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        // TODO optional
+      },
+    );
+  }
+
   List<Widget> getNotifications(List notification){
     var notificationsWidgets = List<Widget>();
     for(var notification in notification){
@@ -58,6 +105,7 @@ class NotificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     notification.add("Dinner will be served in 20 Min");
     notification.add("20 people viewed your profile");
     return Scaffold(
