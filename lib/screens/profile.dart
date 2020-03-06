@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:junctionx_algiers/models/state.dart';
@@ -12,7 +13,6 @@ class ProfilePage extends StatelessWidget {
 
   StateModel appState;
   bool _loadingVisible = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +35,10 @@ class ProfilePage extends StatelessWidget {
     final lastName = appState?.user?.lastName ?? '';
     final tableNumber = appState?.user?.tableNumber ?? '';
     final function = appState?.user?.function ?? '';
-    final favmovie= appState?.user?.favMovie ??'';
-    final visitorNumber=appState?.user?.visitorNumber??'';
-    final aboutYou=appState?.user?.aboutYou??'';
-    final imgUrl=appState?.user?.imgUrl??'';
+    final favmovie = appState?.user?.favMovie ?? '';
+    final visitorNumber = appState?.user?.visitorNumber ?? '';
+    final aboutYou = appState?.user?.aboutYou ?? '';
+    final imgUrl = appState?.user?.imgUrl ?? '';
     final settingsId = appState?.settings?.settingsId ?? '';
 
     return Scaffold(
@@ -48,9 +48,16 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: _backgroundColor,
         iconTheme: IconThemeData(color: _accentColor),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.exit_to_app,size: 30,color: Colors.red,),onPressed: (){
-            StateWidget.of(context).logOutUser();
-          },)
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              size: 30,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              StateWidget.of(context).logOutUser();
+            },
+          )
         ],
       ),
       backgroundColor: _backgroundColor,
@@ -71,16 +78,22 @@ class ProfilePage extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(top: 15),
-                    child: Container(
-                        width: 120.0,
-                        height: 120.0,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(width: 3, color: _accentColor),
-                            image: new DecorationImage(
-                                fit: BoxFit.cover,
-                                image: new NetworkImage(
-                                    "$imgUrl")))),
+                    child: CachedNetworkImage(
+                      imageUrl: imgUrl,
+                      imageBuilder: (context, imageProvider) => Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 3, color: _accentColor),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => new CircularProgressIndicator(),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 10),

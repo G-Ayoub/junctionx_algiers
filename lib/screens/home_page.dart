@@ -8,6 +8,7 @@ import 'package:junctionx_algiers/screens/event_schedule.dart';
 import 'package:junctionx_algiers/screens/notification.dart';
 import 'package:junctionx_algiers/screens/profile.dart';
 import 'package:junctionx_algiers/util/state_widget.dart';
+import 'package:junctionx_algiers/util/validator.dart';
 import 'global.dart';
 import 'login.dart';
 import 'widgets/widgets.dart';
@@ -30,7 +31,7 @@ class _homePageState extends State<homePage> {
   bool isActive = true;
   Timer timer;
   int currentTab = 0; // to
-  int hours=0,minutes=0,second=0;
+  int hours = 0, minutes = 0, second = 0;
   StateModel appState;
   bool _loadingVisible = false;
   Timer _timer;
@@ -38,13 +39,12 @@ class _homePageState extends State<homePage> {
   final databaseReference = Firestore.instance;
   ScrollController _controller = ScrollController();
 
-
   @override
-  void initState(){
+  void initState() {
 // Get the current time
     var now = DateTime.now();
     // Get a 2-minute interval
-    var twoHours = now.add(Duration(hours :54)).difference(now);
+    var twoHours = now.add(Duration(hours: 54)).difference(now);
     // Get the total number of seconds, 2 minutes for 120 seconds
     seconds = twoHours.inSeconds;
     Timer.periodic(Duration(milliseconds: 100), (timer) {
@@ -88,19 +88,19 @@ class _homePageState extends State<homePage> {
     }
   }
 
-  Future<void> onSendMessage(String content, int type,String groupChatId,String firstName,String lastName) async {
+  Future<void> onSendMessage(String content, int type, String groupChatId,
+      String firstName, String lastName) async {
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
-      DocumentReference ref = await databaseReference.collection("messages")
-          .add({
+      DocumentReference ref =
+          await databaseReference.collection("messages").add({
         'id_user': groupChatId,
-        'msg':content,
-        'datetime':DateTime.now(),
-        'nom':firstName+' '+lastName
+        'msg': content,
+        'datetime': DateTime.now(),
+        'nom': firstName + ' ' + lastName
       });
       _scrollToBottom();
       print(ref.documentID);
-
 
       //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
@@ -108,50 +108,65 @@ class _homePageState extends State<homePage> {
     }
   }
 
-  Widget createCard() {
-    return Container(
-      width: 220,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        color: Colors.grey[850],
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget createCard(String notificationMsg, Timestamp notificationTime) {
+    return Row(
+      children: <Widget>[
+        Container(
+          width: 220,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: Colors.grey[850],
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
                 children: <Widget>[
-                  Image.asset(
-                    "assets/img/junction.png",
-                    width: 40,
+                  Row(
+                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image.asset(
+                        "assets/img/junction.png",
+                        width: 40,
+                      ),
+                      Text(
+                        "JunctionX",
+                        style: TextStyle(
+                            color: widget._textFieldBackgroundColor,
+                            fontSize: 10),
+                      ),
+                      Spacer(),
+                      Text(
+                        Validator.readTimestamp(notificationTime.seconds),
+                        style: TextStyle(
+                            color: widget._textFieldBackgroundColor,
+                            fontSize: 10),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "JunctionX",
-                    style: TextStyle(color: widget._textFieldBackgroundColor, fontSize: 10),
+                  SizedBox(
+                    height: 10,
                   ),
-                  Spacer(),
-                  Text(
-                    "10 min ago",
-                    style: TextStyle(color: widget._textFieldBackgroundColor, fontSize: 10),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "$notificationMsg",
+                        style: TextStyle(
+                          color: widget._textColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                  child: Text("Launch will be served in 20 min",
-                      style:
-                          TextStyle(color: widget._textColor, fontSize: 14))),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
-
 
   _scrollToBottom() {
     _controller.jumpTo(_controller.position.maxScrollExtent);
@@ -193,9 +208,16 @@ class _homePageState extends State<homePage> {
         backgroundColor: widget._backgroundColor,
         automaticallyImplyLeading: false,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.exit_to_app,size: 30,color: Colors.red,),onPressed: (){
-            StateWidget.of(context).logOutUser();
-          },)
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              size: 30,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              StateWidget.of(context).logOutUser();
+            },
+          )
         ],
         //iconTheme: IconThemeData(color: widget._accentColor),
       ),
@@ -242,9 +264,7 @@ class _homePageState extends State<homePage> {
                               fontWeight: FontWeight.bold,
                               fontSize: 28),
                         ),
-                        LabelText(
-                            label: 'MIN',
-                            value: "$minutes"),
+                        LabelText(label: 'MIN', value: "$minutes"),
                         Text(
                           ":",
                           style: TextStyle(
@@ -252,9 +272,7 @@ class _homePageState extends State<homePage> {
                               fontWeight: FontWeight.bold,
                               fontSize: 28),
                         ),
-                        LabelText(
-                            label: 'SEC',
-                            value: "$second"),
+                        LabelText(label: 'SEC', value: "$second"),
                       ],
                     ),
                   ],
@@ -274,23 +292,43 @@ class _homePageState extends State<homePage> {
                 padding: const EdgeInsets.only(top: 10),
                 child: Container(
                   height: 110,
-                  child: ListView(
-                    // This next line does the trick.
-                    scrollDirection: Axis.horizontal,
+                  child: Column(
                     children: <Widget>[
-                      Padding(padding: EdgeInsets.only(left: 22),),
-                      createCard(),
-                      SizedBox(width: 10),
-                      createCard(),
-                      SizedBox(width: 10),
-                      createCard(),
-                      Padding(padding: EdgeInsets.only(right: 22),),
+                      Expanded(
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: Firestore.instance
+                              .collection('notification')
+                              .orderBy('time', descending: true)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: snapshot.data.documents.length,
+                                  itemBuilder: (context, i) {
+                                    return createCard(
+                                        snapshot
+                                            .data.documents[i].data['message'],
+                                        snapshot
+                                            .data.documents[i].data['time']);
+                                  });
+                            } else {
+                              return new Center(
+                                child: Text(
+                                  snapshot.error,
+                                  style: TextStyle(color: widget._textColor),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20,top: 20),
+                padding: const EdgeInsets.only(left: 20, top: 20),
                 child: Text(
                   "HUB",
                   style: TextStyle(
@@ -300,7 +338,7 @@ class _homePageState extends State<homePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20,top: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -313,50 +351,89 @@ class _homePageState extends State<homePage> {
                       children: <Widget>[
                         Expanded(
                             child: StreamBuilder<QuerySnapshot>(
-                              stream: databaseReference
-                                  .collection('messages')
-                                  .orderBy('datetime', descending: false)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView.builder(
-                                    controller: _controller,
-                                    padding: const EdgeInsets.all(15),
-                                    itemCount: snapshot.data.documents.length,
-                                    itemBuilder: (ctx, i) {
-                                      if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                                        return SentMessageWidget(i: snapshot.data.documents[i].data["msg"],nom:  snapshot.data.documents[i].data["nom"],imgUrl: "",);
-                                      } else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                                        return ReceivedMessagesWidget(i: snapshot.data.documents[i].data["msg"],imgUrl: "",);
-                                      }else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["imgUrl"]!="") {
-                                        return InkWell(
-                                            onTap: (){
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
-                                            },
-                                            child:ReceivedMessagesWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],));
-                                      }else if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["imgUrl"]!="") {
-                                        return InkWell(
-                                            onTap: (){
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
-                                            },
-                                            child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],
-
-                                            ));
-                                      }
-                                    },
-                                  );
-                                } else {
-                                  return SizedBox();
-                                }
-                              },
-                            )
-                        ),
+                          stream: databaseReference
+                              .collection('messages')
+                              .orderBy('datetime', descending: false)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                controller: _controller,
+                                padding: const EdgeInsets.all(15),
+                                itemCount: snapshot.data.documents.length,
+                                itemBuilder: (ctx, i) {
+                                  if (snapshot.data.documents[i]
+                                              .data['id_user'] !=
+                                          userId &&
+                                      snapshot.data.documents[i].data["msg"] !=
+                                          "imgurl") {
+                                    return SentMessageWidget(
+                                      i: snapshot.data.documents[i].data["msg"],
+                                      nom: snapshot
+                                          .data.documents[i].data["nom"],
+                                      imgUrl: "",
+                                    );
+                                  } else if (snapshot.data.documents[i]
+                                              .data['id_user'] ==
+                                          userId &&
+                                      snapshot.data.documents[i].data["msg"] !=
+                                          "imgurl") {
+                                    return ReceivedMessagesWidget(
+                                      i: snapshot.data.documents[i].data["msg"],
+                                      imgUrl: "",
+                                    );
+                                  } else if (snapshot.data.documents[i]
+                                              .data['id_user'] ==
+                                          userId &&
+                                      snapshot.data.documents[i]
+                                              .data["imgUrl"] !=
+                                          "") {
+                                    return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FullScreenImage(snapshot
+                                                          .data
+                                                          .documents[i]
+                                                          .data["imgUrl"])));
+                                        },
+                                        child: ReceivedMessagesWidget(
+                                          i: "",
+                                          imgUrl: snapshot
+                                              .data.documents[i].data["imgUrl"],
+                                        ));
+                                  } else if (snapshot.data.documents[i]
+                                              .data['id_user'] !=
+                                          userId &&
+                                      snapshot.data.documents[i]
+                                              .data["imgUrl"] !=
+                                          "") {
+                                    return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FullScreenImage(snapshot
+                                                          .data
+                                                          .documents[i]
+                                                          .data["imgUrl"])));
+                                        },
+                                        child: SentMessageWidget(
+                                          i: "",
+                                          imgUrl: snapshot
+                                              .data.documents[i].data["imgUrl"],
+                                        ));
+                                  }
+                                },
+                              );
+                            } else {
+                              return SizedBox();
+                            }
+                          },
+                        )),
                       ],
                     ),
                   ),
@@ -374,7 +451,8 @@ class _homePageState extends State<homePage> {
           size: 30,
         ),
         onPressed: () {
-          onSendMessage("Table $table need help",0, userId, firstName, lastName);
+          onSendMessage(
+              "Table $table need help", 0, userId, firstName, lastName);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -383,7 +461,7 @@ class _homePageState extends State<homePage> {
         notchMargin: 10,
         color: Colors.grey[850],
         child: Container(
-          width: MediaQuery.of(context).size.width-20,
+          width: MediaQuery.of(context).size.width - 20,
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -546,7 +624,6 @@ class LabelText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       width: 80,
       height: 80,
@@ -565,14 +642,13 @@ class LabelText extends StatelessWidget {
             style: TextStyle(
                 color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
           ),
-          Text(
-            '$label',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            )),
-          ],
-        ),
+          Text('$label',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              )),
+        ],
+      ),
     );
   }
 }
