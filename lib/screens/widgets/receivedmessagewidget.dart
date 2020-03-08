@@ -8,11 +8,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
   final String i;
   final String nom;
   final String imgUrl;
-<<<<<<< Updated upstream
   final int help;
-=======
-
->>>>>>> Stashed changes
   const ReceivedMessagesWidget({
     Key key,
     @required this.i,

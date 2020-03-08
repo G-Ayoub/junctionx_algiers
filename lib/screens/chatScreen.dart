@@ -71,11 +71,6 @@ class _ChatScreenState extends State<ChatScreen> {
         'imgProfil':imgProfil,
         'help':0,
       });
-<<<<<<< Updated upstream
-=======
-      Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent+100000));
-      print(ref.documentID);
->>>>>>> Stashed changes
 
 
    //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -84,7 +79,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-<<<<<<< Updated upstream
   @override
   void initState() {
     Timer.periodic(Duration(milliseconds: 100), (timer) {
@@ -94,11 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
         timer.cancel();
       }
     });
-=======
-
-  @override
-  void initState() {
->>>>>>> Stashed changes
     super.initState();
   }
 
@@ -178,11 +167,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         MaterialPageRoute(
                                             builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
                                   },
-<<<<<<< Updated upstream
                                   child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],imgProfil: snapshot.data.documents[i].data["imgProfil"],help:  snapshot.data.documents[i].data["help"],
-=======
-                                  child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"]
->>>>>>> Stashed changes
 
                               ));
                             }

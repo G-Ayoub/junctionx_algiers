@@ -27,14 +27,8 @@ class SentMessageWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-<<<<<<< Updated upstream
           MyCircleAvatar(
             imgUrl: imgProfil,
-=======
-
-          MyCircleAvatar(
-            imgUrl: "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png",
->>>>>>> Stashed changes
           ),
           SizedBox(width: 5,),
           Column(
