@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:junctionx_algiers/models/state.dart';
 import 'package:junctionx_algiers/screens/widgets/full_image.dart';
 import 'login.dart';
+import 'widgets/FirebaseMessageWrapper.dart';
 import 'widgets/widgets.dart';
 import '../util/state_widget.dart';
 import 'package:path/path.dart' as Path;
@@ -20,7 +21,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
   var _sendMsg = TextEditingController();
   StateModel appState;
   bool _loadingVisible = false;
@@ -30,16 +30,18 @@ class _ChatScreenState extends State<ChatScreen> {
   File _image;
   String _uploadedFileURL;
 
-  Future chooseFile(String userId,String firstName,String lastName,String imgU) async {
+  Future chooseFile(
+      String userId, String firstName, String lastName, String imgU) async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
-        uploadFile(userId,firstName,lastName,imgU);
+        uploadFile(userId, firstName, lastName, imgU);
       });
     });
   }
 
-  Future uploadFile(String userId,String firstName,String lastName,String imgU) async {
+  Future uploadFile(
+      String userId, String firstName, String lastName, String imgU) async {
     String url;
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
@@ -48,32 +50,36 @@ class _ChatScreenState extends State<ChatScreen> {
     var dowUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
     _uploadedFileURL = dowUrl.toString();
     print(_uploadedFileURL);
-    onSendMessage("imgurl",0,userId,firstName,lastName,_uploadedFileURL,imgU);
+    onSendMessage(
+        "imgurl", 0, userId, firstName, lastName, _uploadedFileURL, imgU);
     print('File Uploaded');
   }
 
-
-
-
-  Future<void> onSendMessage(String content, int type,String groupChatId,String firstName,String lastName,String imageUrl,String imgProfil) async {
+  Future<void> onSendMessage(
+      String content,
+      int type,
+      String groupChatId,
+      String firstName,
+      String lastName,
+      String imageUrl,
+      String imgProfil) async {
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       _sendMsg.clear();
-      DocumentReference ref = await databaseReference.collection("messages")
-          .add({
+      DocumentReference ref =
+          await databaseReference.collection("messages").add({
         'id_user': groupChatId,
-        'msg':content,
-        'datetime':DateTime.now(),
-        'nom':firstName+' '+lastName,
-        'imgUrl':imageUrl,
-        'imgProfil':imgProfil,
-        'help':0,
+        'msg': content,
+        'datetime': DateTime.now(),
+        'nom': firstName + ' ' + lastName,
+        'imgUrl': imageUrl,
+        'imgProfil': imgProfil,
+        'help': 0,
       });
 
-
-   //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
-     // Fluttertoast.showToast(msg: 'Nothing to send');
+      // Fluttertoast.showToast(msg: 'Nothing to send');
     }
   }
 
@@ -91,7 +97,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     appState = StateWidget.of(context).state;
     if (!appState.isLoading &&
         (appState.firebaseUserAuth == null ||
@@ -108,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final userId = appState?.firebaseUserAuth?.uid ?? '';
     final firstName = appState?.user?.firstName ?? '';
     final lastName = appState?.user?.lastName ?? '';
-    final imgU = appState?.user?.imgUrl ??'';
+    final imgU = appState?.user?.imgUrl ?? '';
 
     return Scaffold(
       backgroundColor: widget._backgroundColor,
@@ -118,22 +123,29 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: widget._backgroundColor,
         iconTheme: IconThemeData(color: widget._accentColor),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.exit_to_app,size: 30,color: Colors.red,),onPressed: (){
-            StateWidget.of(context).logOutUser();
-          },)
+          IconButton(
+            icon: Icon(
+              Icons.exit_to_app,
+              size: 30,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              StateWidget.of(context).logOutUser();
+            },
+          )
         ],
       ),
-        
-      body: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
+      body: FirebaseMessageWrapper(
+        Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
                     stream: databaseReference
                         .collection('messages')
-                        .orderBy('datetime',descending: true)
+                        .orderBy('datetime', descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -143,30 +155,77 @@ class _ChatScreenState extends State<ChatScreen> {
                           padding: const EdgeInsets.all(15),
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (ctx, i) {
-                            if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                              return SentMessageWidget(i: snapshot.data.documents[i].data["msg"],nom:  snapshot.data.documents[i].data["nom"],imgUrl: "",imgProfil: snapshot.data.documents[i].data["imgProfil"],help:  snapshot.data.documents[i].data["help"],);
-                            } else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                              return ReceivedMessagesWidget(i: snapshot.data.documents[i].data["msg"],imgUrl: "",help:  snapshot.data.documents[i].data["help"],);
-                            }else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["imgUrl"]!="") {
+                            if (snapshot.data.documents[i].data['id_user'] !=
+                                    userId &&
+                                snapshot.data.documents[i].data["msg"] !=
+                                    "imgurl") {
+                              return SentMessageWidget(
+                                i: snapshot.data.documents[i].data["msg"],
+                                nom: snapshot.data.documents[i].data["nom"],
+                                imgUrl: "",
+                                imgProfil: snapshot
+                                    .data.documents[i].data["imgProfil"],
+                                help: snapshot.data.documents[i].data["help"],
+                              );
+                            } else if (snapshot
+                                        .data.documents[i].data['id_user'] ==
+                                    userId &&
+                                snapshot.data.documents[i].data["msg"] !=
+                                    "imgurl") {
+                              return ReceivedMessagesWidget(
+                                i: snapshot.data.documents[i].data["msg"],
+                                imgUrl: "",
+                                help: snapshot.data.documents[i].data["help"],
+                              );
+                            } else if (snapshot
+                                        .data.documents[i].data['id_user'] ==
+                                    userId &&
+                                snapshot.data.documents[i].data["imgUrl"] !=
+                                    "") {
                               return InkWell(
-                                onTap: (){
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
-                                },
-                                child:ReceivedMessagesWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],help:  snapshot.data.documents[i].data["help"],));
-                            }else if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["imgUrl"]!="") {
-                              return InkWell(
-                                  onTap: (){
+                                  onTap: () {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
+                                            builder: (context) =>
+                                                FullScreenImage(snapshot
+                                                    .data
+                                                    .documents[i]
+                                                    .data["imgUrl"])));
                                   },
-                                  child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],imgProfil: snapshot.data.documents[i].data["imgProfil"],help:  snapshot.data.documents[i].data["help"],
-
-                              ));
+                                  child: ReceivedMessagesWidget(
+                                    i: "",
+                                    imgUrl: snapshot
+                                        .data.documents[i].data["imgUrl"],
+                                    help:
+                                        snapshot.data.documents[i].data["help"],
+                                  ));
+                            } else if (snapshot
+                                        .data.documents[i].data['id_user'] !=
+                                    userId &&
+                                snapshot.data.documents[i].data["imgUrl"] !=
+                                    "") {
+                              return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                FullScreenImage(snapshot
+                                                    .data
+                                                    .documents[i]
+                                                    .data["imgUrl"])));
+                                  },
+                                  child: SentMessageWidget(
+                                    i: "",
+                                    imgUrl: snapshot
+                                        .data.documents[i].data["imgUrl"],
+                                    nom: snapshot.data.documents[i].data["nom"],
+                                    imgProfil: snapshot
+                                        .data.documents[i].data["imgProfil"],
+                                    help:
+                                        snapshot.data.documents[i].data["help"],
+                                  ));
                             }
                           },
                         );
@@ -174,84 +233,82 @@ class _ChatScreenState extends State<ChatScreen> {
                         return SizedBox();
                       }
                     },
-                  )
-                ),
-                Container(
-                  margin: EdgeInsets.all(15.0),
-                  height: 61,
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(15.0),
-                        decoration: BoxDecoration(
-                            color: widget._textFieldBackgroundColor,
-                            shape: BoxShape.circle),
-                        child: GestureDetector(
-                          child: Icon(
-                            Icons.photo_camera,
-                            color: Colors.white,
-                          ),
-                          onTap: () {
-                            setState(() {
-                              chooseFile(userId,firstName,lastName,imgU);
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                        child: Container(
+                  )),
+                  Container(
+                    margin: EdgeInsets.all(15.0),
+                    height: 61,
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.all(15.0),
                           decoration: BoxDecoration(
-                            color: widget._textFieldBackgroundColor,
-                            borderRadius: BorderRadius.circular(35.0),
+                              color: widget._textFieldBackgroundColor,
+                              shape: BoxShape.circle),
+                          child: GestureDetector(
+                            child: Icon(
+                              Icons.photo_camera,
+                              color: Colors.white,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                chooseFile(userId, firstName, lastName, imgU);
+                              });
+                            },
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: TextField(
-                              controller: _sendMsg,
-                              decoration: InputDecoration(
-                                hintText: "Type Something...",
-                                border: InputBorder.none,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: widget._textFieldBackgroundColor,
+                              borderRadius: BorderRadius.circular(35.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20),
+                              child: TextField(
+                                controller: _sendMsg,
+                                decoration: InputDecoration(
+                                  hintText: "Type Something...",
+                                  border: InputBorder.none,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                            color: widget._textFieldBackgroundColor,
-                            shape: BoxShape.circle),
-                        child: InkWell(
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 30,
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              color: widget._textFieldBackgroundColor,
+                              shape: BoxShape.circle),
+                          child: InkWell(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.send,
+                                color: Colors.white,
+                                size: 30,
+                              ),
                             ),
+                            onTap: () {
+                              if (_sendMsg.text != "") {
+                                onSendMessage(_sendMsg.text, 0, userId,
+                                    firstName, lastName, "", imgU);
+                              }
+                            },
                           ),
-                          onTap: (){
-                            if(_sendMsg.text!=""){
-                              onSendMessage(_sendMsg.text,0,userId,firstName,lastName,"",imgU);
-                            }
-                          },
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-
-        ],
+          ],
+        ),
       ),
     );
   }
-
-
 }
 
 List<IconData> icons = [

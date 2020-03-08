@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:junctionx_algiers/util/validator.dart';
+
+import 'widgets/FirebaseMessageWrapper.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPage extends State<NotificationPage> {
-  final Firestore databaseReference = Firestore.instance;
+  //final Firestore databaseReference = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
   final Color _backgroundColor = const Color(0xff1c1e21);
@@ -23,35 +24,6 @@ class _NotificationPage extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    _fcm.subscribeToTopic('all');
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        );
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        // TODO optional
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        // TODO optional
-      },
-    );
   }
 
   @override
@@ -64,48 +36,50 @@ class _NotificationPage extends State<NotificationPage> {
         iconTheme: IconThemeData(color: _accentColor),
       ),
       backgroundColor: _backgroundColor,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(22, 37, 22, 0),
-            child: Text(
-              "NOTIFICATIONS",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: _textColor),
+      body: FirebaseMessageWrapper(
+         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(22, 37, 22, 0),
+              child: Text(
+                "NOTIFICATIONS",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                    color: _textColor),
+              ),
             ),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: Firestore.instance
-                  .collection('notification')
-                  .orderBy('time', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return new Center(child: new CircularProgressIndicator());
-                  default:
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, i) {
-                            return createNotification(
-                                snapshot.data.documents[i].data['message'],
-                                snapshot.data.documents[i].data['time']);
-                          });
-                    } else {
-                      return null;
-                    }
-                }
-              },
-            ),
-          )
-        ],
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: Firestore.instance
+                    .collection('notification')
+                    .orderBy('time', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return new Center(child: new CircularProgressIndicator());
+                    default:
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, i) {
+                              return createNotification(
+                                  snapshot.data.documents[i].data['message'],
+                                  snapshot.data.documents[i].data['time']);
+                            });
+                      } else {
+                        return null;
+                      }
+                  }
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

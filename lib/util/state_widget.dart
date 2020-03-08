@@ -6,6 +6,7 @@ import '../models/state.dart';
 import '../models/user.dart';
 import '../models/settings.dart';
 import '../util/auth.dart';
+import 'FirebaseNotificationService.dart';
 
 class StateWidget extends StatefulWidget {
   final StateModel state;
@@ -19,8 +20,7 @@ class StateWidget extends StatefulWidget {
   // Returns data of the nearest widget _StateDataWidget
   // in the widget tree.
   static _StateWidgetState of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(_StateDataWidget)
-            as _StateDataWidget)
+    return (context.dependOnInheritedWidgetOfExactType<_StateDataWidget>())
         .data;
   }
 
@@ -36,6 +36,7 @@ class _StateWidgetState extends State<StateWidget> {
   @override
   void initState() {
     super.initState();
+    FirebaseNotificationService.instance;
     if (widget.state != null) {
       state = widget.state;
     } else {

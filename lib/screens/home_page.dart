@@ -12,6 +12,7 @@ import 'package:junctionx_algiers/util/state_widget.dart';
 import 'package:junctionx_algiers/util/validator.dart';
 import 'global.dart';
 import 'login.dart';
+import 'widgets/FirebaseMessageWrapper.dart';
 import 'widgets/widgets.dart';
 import '../screens/widgets/full_image.dart';
 
@@ -224,228 +225,229 @@ class _homePageState extends State<homePage> {
         //iconTheme: IconThemeData(color: widget._accentColor),
       ),
       backgroundColor: widget._backgroundColor,
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    "TIME LEFT FOR SUBMISSION",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                        color: widget._accentColor),
+      body: FirebaseMessageWrapper(
+         SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints:
+                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      "TIME LEFT FOR SUBMISSION",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                          color: widget._accentColor),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0, left: 22, right: 22),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        LabelText(
-                          label: 'HRS',
-                          value: "$hours",
-                        ),
-                        Text(
-                          ":",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28),
-                        ),
-                        LabelText(label: 'MIN', value: "$minutes"),
-                        Text(
-                          ":",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28),
-                        ),
-                        LabelText(label: 'SEC', value: "$second"),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                child: Text(
-                  "NOTIFICATIONS",
-                  style: TextStyle(
-                      color: widget._textColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Container(
-                  height: 110,
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, left: 22, right: 22),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Expanded(
-                        child: StreamBuilder<QuerySnapshot>(
-                          stream: Firestore.instance
-                              .collection('notification')
-                              .orderBy('time', descending: true)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data.documents.length,
-                                  itemBuilder: (context, i) {
-                                    return createCard(
-                                        snapshot
-                                            .data.documents[i].data['message'],
-                                        snapshot
-                                            .data.documents[i].data['time']);
-                                  });
-                            } else {
-                              return new Center(
-                                child: snapshot.error!=null?Text(
-                                  snapshot.error,
-                                  style: TextStyle(color: widget._textColor),
-                                ):Container(),
-                              );
-                            }
-                          },
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          LabelText(
+                            label: 'HRS',
+                            value: "$hours",
+                          ),
+                          Text(
+                            ":",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28),
+                          ),
+                          LabelText(label: 'MIN', value: "$minutes"),
+                          Text(
+                            ":",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28),
+                          ),
+                          LabelText(label: 'SEC', value: "$second"),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                child: Text(
-                  "HUB",
-                  style: TextStyle(
-                      color: widget._textColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 20),
+                  child: Text(
+                    "NOTIFICATIONS",
+                    style: TextStyle(
+                        color: widget._textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
-                  color: Colors.grey[850],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
                   child: Container(
-                    height: 220,
-                    //color: Colors.grey[850],
+                    height: 110,
                     child: Column(
                       children: <Widget>[
                         Expanded(
-                            child: StreamBuilder<QuerySnapshot>(
-                          stream: databaseReference
-                              .collection('messages')
-                              .orderBy('datetime',descending: true)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                reverse: true,
-                                controller: _controller,
-                                padding: const EdgeInsets.all(15),
-                                itemCount: snapshot.data.documents.length,
-                                itemBuilder: (ctx, i) {
-                                  if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"] !=
-                                          "imgurl") {
-                                    return SentMessageWidget(
-                                      i: snapshot.data.documents[i].data["msg"],
-                                      nom: snapshot
-                                          .data.documents[i].data["nom"],
-                                      imgUrl: "",
-                                      imgProfil: snapshot.data.documents[i].data["imgProfil"],
-                                      help:  snapshot.data.documents[i].data["help"],
-                                    );
-                                  } else if (snapshot.data.documents[i]
-                                              .data['id_user'] ==
-                                          userId &&
-                                      snapshot.data.documents[i].data["msg"] !=
-                                          "imgurl") {
-                                    return ReceivedMessagesWidget(
-                                      i: snapshot.data.documents[i].data["msg"],
-                                      imgUrl: "",
-                                      help:  snapshot.data.documents[i].data["help"],
-                                    );
-                                  } else if (snapshot.data.documents[i].data['id_user'] ==
-                                          userId &&
-                                      snapshot.data.documents[i]
-                                              .data["imgUrl"] !=
-                                          "") {
-                                    return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FullScreenImage(snapshot
-                                                          .data
-                                                          .documents[i]
-                                                          .data["imgUrl"])));
-                                        },
-                                        child: ReceivedMessagesWidget(
-                                          i: "",
-                                          imgUrl: snapshot
-                                              .data.documents[i].data["imgUrl"],
-                                          help:  snapshot.data.documents[i].data["help"],
-                                        ));
-                                  } else if (snapshot.data.documents[i]
-                                              .data['id_user'] !=
-                                          userId &&
-                                      snapshot.data.documents[i]
-                                              .data["imgUrl"] !=
-                                          "") {
-                                    return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FullScreenImage(snapshot
-                                                          .data
-                                                          .documents[i]
-                                                          .data["imgUrl"])));
-                                        },
-                                        child: SentMessageWidget(
-                                          i: "",
-                                          imgUrl: snapshot
-                                              .data.documents[i].data["imgUrl"],
-                                            nom:  snapshot.data.documents[i].data["nom"],
-                                          imgProfil: snapshot.data.documents[i].data["imgProfil"],
-                                          help:  snapshot.data.documents[i].data["help"],
-                                        ));
-                                  }
-                                },
-                              );
-                            } else {
-                              return SizedBox();
-                            }
-                          },
-                        )),
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream: Firestore.instance
+                                .collection('notification')
+                                .orderBy('time', descending: true)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data.documents.length,
+                                    itemBuilder: (context, i) {
+                                      return createCard(
+                                          snapshot
+                                              .data.documents[i].data['message'],
+                                          snapshot
+                                              .data.documents[i].data['time']);
+                                    });
+                              } else {
+                                return new Center(
+                                  child: snapshot.error!=null?Text(
+                                    snapshot.error,
+                                    style: TextStyle(color: widget._textColor),
+                                  ):Container(),
+                                );
+                              }
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, top: 20),
+                  child: Text(
+                    "HUB",
+                    style: TextStyle(
+                        color: widget._textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    color: Colors.grey[850],
+                    child: Container(
+                      height: 220,
+                      //color: Colors.grey[850],
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                              child: StreamBuilder<QuerySnapshot>(
+                            stream: databaseReference
+                                .collection('messages')
+                                .orderBy('datetime', descending: true)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  reverse: true,controller: _controller,
+                                  padding: const EdgeInsets.all(15),
+                                  itemCount: snapshot.data.documents.length,
+                                  itemBuilder: (ctx, i) {
+                                    if (snapshot.data.documents[i]
+                                                .data['id_user'] !=
+                                            userId &&
+                                        snapshot.data.documents[i].data["msg"] !=
+                                            "imgurl") {
+                                      return SentMessageWidget(
+                                        i: snapshot.data.documents[i].data["msg"],
+                                        nom: snapshot
+                                            .data.documents[i].data["nom"],
+                                        imgUrl: "",
+                                      imgProfil: snapshot.data.documents[i].data["imgProfil"],
+                                      help:  snapshot.data.documents[i].data["help"],);
+                                    } else if (snapshot.data.documents[i]
+                                                .data['id_user'] ==
+                                            userId &&
+                                        snapshot.data.documents[i].data["msg"] !=
+                                            "imgurl") {
+                                      return ReceivedMessagesWidget(
+                                        i: snapshot.data.documents[i].data["msg"],
+                                        imgUrl: "",
+                                      help:  snapshot.data.documents[i].data["help"],);
+                                    } else if (snapshot.data.documents[i]
+                                                .data['id_user'] ==
+                                            userId &&
+                                        snapshot.data.documents[i]
+                                                .data["imgUrl"] !=
+                                            "") {
+                                      return InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FullScreenImage(snapshot
+                                                            .data
+                                                            .documents[i]
+                                                            .data["imgUrl"])));
+                                          },
+                                          child: ReceivedMessagesWidget(
+                                            i: "",
+                                            imgUrl: snapshot
+                                                .data.documents[i].data["imgUrl"],
+                                          help:  snapshot.data.documents[i].data["help"],));
+                                    } else if (snapshot.data.documents[i]
+                                                .data['id_user'] !=
+                                            userId &&
+                                        snapshot.data.documents[i]
+                                                .data["imgUrl"] !=
+                                            "") {
+                                      return InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FullScreenImage(snapshot
+                                                            .data
+                                                            .documents[i]
+                                                            .data["imgUrl"])));
+                                          },
+                                          child: SentMessageWidget(
+                                            i: "",
+                                            imgUrl: snapshot
+                                                .data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],
+                                          imgProfil: snapshot.data.documents[i].data["imgProfil"],
+                                          help:  snapshot.data.documents[i].data["help"],
+                                          ));
+                                    }
+                                  },
+                                );
+                              } else {
+                                return SizedBox();
+                              }
+                            },
+                          )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
