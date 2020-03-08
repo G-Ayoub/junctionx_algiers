@@ -27,8 +27,14 @@ class SentMessageWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
+<<<<<<< Updated upstream
           MyCircleAvatar(
             imgUrl: imgProfil,
+=======
+
+          MyCircleAvatar(
+            imgUrl: "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png",
+>>>>>>> Stashed changes
           ),
           SizedBox(width: 5,),
           Column(
@@ -37,6 +43,7 @@ class SentMessageWidget extends StatelessWidget {
                 "$nom",
                 style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white),
               ),
+
               Container(
                 constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * .6),

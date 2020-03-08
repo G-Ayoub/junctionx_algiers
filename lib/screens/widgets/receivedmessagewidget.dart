@@ -8,7 +8,11 @@ class ReceivedMessagesWidget extends StatelessWidget {
   final String i;
   final String nom;
   final String imgUrl;
+<<<<<<< Updated upstream
   final int help;
+=======
+
+>>>>>>> Stashed changes
   const ReceivedMessagesWidget({
     Key key,
     @required this.i,
@@ -25,7 +29,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Container(
                 constraints: BoxConstraints(

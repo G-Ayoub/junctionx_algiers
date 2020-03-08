@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:junctionx_algiers/models/state.dart';
 import 'package:junctionx_algiers/screens/widgets/full_image.dart';
@@ -71,6 +71,11 @@ class _ChatScreenState extends State<ChatScreen> {
         'imgProfil':imgProfil,
         'help':0,
       });
+<<<<<<< Updated upstream
+=======
+      Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent+100000));
+      print(ref.documentID);
+>>>>>>> Stashed changes
 
 
    //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -79,6 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+<<<<<<< Updated upstream
   @override
   void initState() {
     Timer.periodic(Duration(milliseconds: 100), (timer) {
@@ -88,11 +94,17 @@ class _ChatScreenState extends State<ChatScreen> {
         timer.cancel();
       }
     });
+=======
+
+  @override
+  void initState() {
+>>>>>>> Stashed changes
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     appState = StateWidget.of(context).state;
     if (!appState.isLoading &&
         (appState.firebaseUserAuth == null ||
@@ -138,6 +150,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
+                        Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent+100000));
                         return ListView.builder(
                           controller: _controller,
                           reverse: true,
@@ -165,7 +178,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                         MaterialPageRoute(
                                             builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
                                   },
+<<<<<<< Updated upstream
                                   child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],imgProfil: snapshot.data.documents[i].data["imgProfil"],help:  snapshot.data.documents[i].data["help"],
+=======
+                                  child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"]
+>>>>>>> Stashed changes
 
                               ));
                             }
