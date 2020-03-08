@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:junctionx_algiers/models/state.dart';
 import 'package:junctionx_algiers/screens/widgets/full_image.dart';
-import 'global.dart';
 import 'login.dart';
 import 'widgets/widgets.dart';
 import '../util/state_widget.dart';
@@ -139,7 +137,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent+100000));
                         return ListView.builder(
                           controller: _controller,
                           reverse: true,
@@ -248,16 +245,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
           ),
-       /*   Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showBottom = false;
-                  onSendMessage(_sendMsg.text,0,userId,firstName,lastName);
-                });
-              },
-            ),
-          ),*/
 
         ],
       ),
