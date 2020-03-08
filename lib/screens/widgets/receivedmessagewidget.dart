@@ -4,14 +4,17 @@ import '../global.dart';
 import 'mycircleavatar.dart';
 class ReceivedMessagesWidget extends StatelessWidget {
   final Color _textFieldBackgroundColor = const Color(0xff797979);
+  final Color _accentColor = const Color(0xfff9a61b);
   final String i;
   final String nom;
   final String imgUrl;
+  final int help;
   const ReceivedMessagesWidget({
     Key key,
     @required this.i,
     @required this.nom,
     @required this.imgUrl,
+    @required this.help,
   }) : super(key: key);
 
   @override
@@ -19,6 +22,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +32,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
                     maxWidth: MediaQuery.of(context).size.width * .6),
                 padding: const EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
-                  color: _textFieldBackgroundColor,
+                  color: help==1?_accentColor:Colors.grey[50],
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(25),
                     bottomLeft: Radius.circular(25),
@@ -38,7 +42,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
                 child: i!=""?Text(
                   "$i",
                   style: Theme.of(context).textTheme.body1.apply(
-                        color: Colors.white,
+                        color: help==1?Colors.white:Colors.black,
                       ),
                 ):Image.network(
                   imgUrl,

@@ -137,11 +137,12 @@ class ProfilePage extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 16, color: _textFieldBackgroundColor),
                 ),
-                Spacer(),
-                Text(
+                SizedBox(width: 35,),
+                Expanded(
+                 child:Text(
                   "$email",
                   style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                )),
               ],
             ),
           ),
@@ -161,10 +162,12 @@ class ProfilePage extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 16, color: _textFieldBackgroundColor),
                 ),
-                Spacer(),
-                Text(
-                  "$favmovie",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                SizedBox(width: 70,),
+                Expanded(
+                  child: Text(
+                    "$favmovie",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -185,7 +188,7 @@ class ProfilePage extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 16, color: _textFieldBackgroundColor),
                 ),
-                Spacer(),
+                SizedBox(width: 42,),
                 Text(
                   "$tableNumber",
                   style: TextStyle(fontSize: 16, color: Colors.white),
@@ -208,7 +211,7 @@ class ProfilePage extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 16, color: _textFieldBackgroundColor),
                 ),
-                Spacer(),
+                SizedBox(width: 8,),
                 Text(
                   "$visitorNumber",
                   style: TextStyle(fontSize: 16, color: Colors.white),

@@ -26,6 +26,7 @@ class homePage extends StatefulWidget {
 }
 
 class _homePageState extends State<homePage> {
+  final Color _accentColor = const Color(0xfff9a61b);
   static const duration = const Duration(seconds: 1);
   int secondsPassed = 0;
   bool isActive = true;
@@ -49,7 +50,7 @@ class _homePageState extends State<homePage> {
     seconds = twoHours.inSeconds;
     Timer.periodic(Duration(milliseconds: 100), (timer) {
       if (mounted) {
-        _scrollToBottom();
+
         timer.cancel();
       } else {
         timer.cancel();
@@ -88,25 +89,24 @@ class _homePageState extends State<homePage> {
     }
   }
 
-  Future<void> onSendMessage(String content, int type, String groupChatId,
-      String firstName, String lastName) async {
-    // type: 0 = text, 1 = image, 2 = sticker
-    if (content.trim() != '') {
-      DocumentReference ref =
-          await databaseReference.collection("messages").add({
-        'id_user': groupChatId,
-        'msg': content,
-        'datetime': DateTime.now(),
-        'nom': firstName + ' ' + lastName
-      });
-      _scrollToBottom();
-      print(ref.documentID);
-
-      //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-    } else {
-      // Fluttertoast.showToast(msg: 'Nothing to send');
-    }
+  Future alert(tableId,userId,firstName,lastName,imgUrl){
+    print(imgUrl);
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => CustomDialog(
+        title: "Do you need help ?",
+        tableId: tableId,
+        userId:userId,
+        firstName:firstName,
+        lastName:lastName,
+        buttonText: "Okay",
+        imgProfil: imgUrl,
+        icon: Icons.info_outline,
+      ),
+    );
   }
+
+
 
   Widget createCard(String notificationMsg, Timestamp notificationTime) {
     return Row(
@@ -136,12 +136,12 @@ class _homePageState extends State<homePage> {
                             fontSize: 10),
                       ),
                       Spacer(),
-                      Text(
+                      notificationTime!=null?Text(
                         Validator.readTimestamp(notificationTime.seconds),
                         style: TextStyle(
                             color: widget._textFieldBackgroundColor,
                             fontSize: 10),
-                      ),
+                      ):Container(),
                     ],
                   ),
                   SizedBox(
@@ -150,13 +150,13 @@ class _homePageState extends State<homePage> {
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
+                      child: notificationMsg!=""&&notificationMsg!=null?Text(
                         "$notificationMsg",
                         style: TextStyle(
                           color: widget._textColor,
                           fontSize: 14,
                         ),
-                      ),
+                      ):Container(),
                     ),
                   ),
                 ],
@@ -168,9 +168,6 @@ class _homePageState extends State<homePage> {
     );
   }
 
-  _scrollToBottom() {
-    _controller.jumpTo(_controller.position.maxScrollExtent);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +193,7 @@ class _homePageState extends State<homePage> {
     final lastName = appState?.user?.lastName ?? '';
     final firstName = appState?.user?.firstName ?? '';
     final table = appState?.user?.tableNumber ?? '';
+    final imgURL = appState?.user?.imgUrl ??'';
     final settingsId = appState?.settings?.settingsId ?? '';
 
     return Scaffold(
@@ -314,10 +312,10 @@ class _homePageState extends State<homePage> {
                                   });
                             } else {
                               return new Center(
-                                child: Text(
+                                child: snapshot.error!=null?Text(
                                   snapshot.error,
                                   style: TextStyle(color: widget._textColor),
-                                ),
+                                ):Container(),
                               );
                             }
                           },
@@ -353,25 +351,25 @@ class _homePageState extends State<homePage> {
                             child: StreamBuilder<QuerySnapshot>(
                           stream: databaseReference
                               .collection('messages')
-                              .orderBy('datetime', descending: false)
+                              .orderBy('datetime',descending: true)
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return ListView.builder(
+                                reverse: true,
                                 controller: _controller,
                                 padding: const EdgeInsets.all(15),
                                 itemCount: snapshot.data.documents.length,
                                 itemBuilder: (ctx, i) {
-                                  if (snapshot.data.documents[i]
-                                              .data['id_user'] !=
-                                          userId &&
-                                      snapshot.data.documents[i].data["msg"] !=
+                                  if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"] !=
                                           "imgurl") {
                                     return SentMessageWidget(
                                       i: snapshot.data.documents[i].data["msg"],
                                       nom: snapshot
                                           .data.documents[i].data["nom"],
                                       imgUrl: "",
+                                      imgProfil: snapshot.data.documents[i].data["imgProfil"],
+                                      help:  snapshot.data.documents[i].data["help"],
                                     );
                                   } else if (snapshot.data.documents[i]
                                               .data['id_user'] ==
@@ -381,9 +379,9 @@ class _homePageState extends State<homePage> {
                                     return ReceivedMessagesWidget(
                                       i: snapshot.data.documents[i].data["msg"],
                                       imgUrl: "",
+                                      help:  snapshot.data.documents[i].data["help"],
                                     );
-                                  } else if (snapshot.data.documents[i]
-                                              .data['id_user'] ==
+                                  } else if (snapshot.data.documents[i].data['id_user'] ==
                                           userId &&
                                       snapshot.data.documents[i]
                                               .data["imgUrl"] !=
@@ -403,6 +401,7 @@ class _homePageState extends State<homePage> {
                                           i: "",
                                           imgUrl: snapshot
                                               .data.documents[i].data["imgUrl"],
+                                          help:  snapshot.data.documents[i].data["help"],
                                         ));
                                   } else if (snapshot.data.documents[i]
                                               .data['id_user'] !=
@@ -425,6 +424,9 @@ class _homePageState extends State<homePage> {
                                           i: "",
                                           imgUrl: snapshot
                                               .data.documents[i].data["imgUrl"],
+                                            nom:  snapshot.data.documents[i].data["nom"],
+                                          imgProfil: snapshot.data.documents[i].data["imgProfil"],
+                                          help:  snapshot.data.documents[i].data["help"],
                                         ));
                                   }
                                 },
@@ -451,8 +453,10 @@ class _homePageState extends State<homePage> {
           size: 30,
         ),
         onPressed: () {
-          onSendMessage(
+          /*onSendMessage(
               "Table $table need help", 0, userId, firstName, lastName);
+        }, */
+          alert(table,userId,firstName,lastName,imgURL);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -651,4 +655,136 @@ class LabelText extends StatelessWidget {
       ),
     );
   }
+}
+class CustomDialog extends StatelessWidget {
+  final String title,tableId,userId,firstName,lastName, buttonText,imgProfil;
+  final IconData icon;
+  final databaseReference = Firestore.instance;
+  Future<void> onSendMessage(String content, int type, String groupChatId,
+      String firstName, String lastName,String imgPro) async {
+    // type: 0 = text, 1 = image, 2 = sticker
+    if (content.trim() != '') {
+      DocumentReference ref =
+      await databaseReference.collection("messages").add({
+        'id_user': groupChatId,
+        'msg': content,
+        'datetime': DateTime.now(),
+        'nom': firstName + ' ' + lastName,
+        'imgProfil':imgPro,
+        'help':1
+      });
+      //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+    } else {
+      // Fluttertoast.showToast(msg: 'Nothing to send');
+    }
+  }
+
+  CustomDialog({
+    @required this.title,
+    @required this.tableId,
+    @required this.userId,
+    @required this.firstName,
+    @required this.lastName,
+    @required this.buttonText,
+    @required this.imgProfil,
+    this.icon,
+  });
+  dialogContent(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(
+            top: Consts.avatarRadius + Consts.padding,
+          ),
+          margin: EdgeInsets.only(top: Consts.avatarRadius),
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(Consts.padding),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: const Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 24.0),
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: MaterialButton(
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0)),
+                        ),
+                        color: Colors.grey,
+                        onPressed: () {
+                          Navigator.of(context).pop(); // To close the dialog
+                        },
+                        child: Text("Cancel",style: TextStyle(fontSize: 18),),
+                      ),
+                    ),
+                    Expanded(
+                      child: MaterialButton(
+                        shape: new RoundedRectangleBorder(
+                          borderRadius:  BorderRadius.only(bottomRight: Radius.circular(16.0)),
+                        ),
+                        color: Color(0xfff9a61b),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // To close the dialog
+                          onSendMessage(
+                              "Table $tableId need help", 0, userId, firstName, lastName,imgProfil);
+                        },
+                        child: Text("Confirm",style: TextStyle(color: Colors.white,fontSize: 18),),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+          ),
+        ),
+        Positioned(
+          left: Consts.padding,
+          right: Consts.padding,
+          child: CircleAvatar(
+            radius: Consts.avatarRadius,
+            backgroundColor:Color(0xfff9a61b),
+            child: Icon(icon,color: Colors.white,size: 40,),
+          ),
+        ),
+      ],
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Consts.padding),
+      ),
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: dialogContent(context),
+    );
+  }
+}
+class Consts {
+  Consts._();
+
+  static const double padding = 16.0;
+  static const double avatarRadius = 30.0;
 }

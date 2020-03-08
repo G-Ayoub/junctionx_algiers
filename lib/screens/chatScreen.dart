@@ -32,16 +32,16 @@ class _ChatScreenState extends State<ChatScreen> {
   File _image;
   String _uploadedFileURL;
 
-  Future chooseFile(String userId,String firstName,String lastName) async {
+  Future chooseFile(String userId,String firstName,String lastName,String imgU) async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
-        uploadFile(userId,firstName,lastName);
+        uploadFile(userId,firstName,lastName,imgU);
       });
     });
   }
 
-  Future uploadFile(String userId,String firstName,String lastName) async {
+  Future uploadFile(String userId,String firstName,String lastName,String imgU) async {
     String url;
     StorageReference storageReference = FirebaseStorage.instance
         .ref()
@@ -50,14 +50,14 @@ class _ChatScreenState extends State<ChatScreen> {
     var dowUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
     _uploadedFileURL = dowUrl.toString();
     print(_uploadedFileURL);
-    onSendMessage("imgurl",0,userId,firstName,lastName,_uploadedFileURL);
+    onSendMessage("imgurl",0,userId,firstName,lastName,_uploadedFileURL,imgU);
     print('File Uploaded');
   }
 
 
 
 
-  Future<void> onSendMessage(String content, int type,String groupChatId,String firstName,String lastName,String imageUrl) async {
+  Future<void> onSendMessage(String content, int type,String groupChatId,String firstName,String lastName,String imageUrl,String imgProfil) async {
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       _sendMsg.clear();
@@ -67,10 +67,10 @@ class _ChatScreenState extends State<ChatScreen> {
         'msg':content,
         'datetime':DateTime.now(),
         'nom':firstName+' '+lastName,
-        'imgUrl':imageUrl
+        'imgUrl':imageUrl,
+        'imgProfil':imgProfil,
+        'help':0,
       });
-      _scrollToBottom();
-      print(ref.documentID);
 
 
    //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -78,14 +78,11 @@ class _ChatScreenState extends State<ChatScreen> {
      // Fluttertoast.showToast(msg: 'Nothing to send');
     }
   }
-  _scrollToBottom() {
-    _controller.jumpTo(_controller.position.maxScrollExtent);
-  }
+
   @override
   void initState() {
     Timer.periodic(Duration(milliseconds: 100), (timer) {
       if (mounted) {
-        _scrollToBottom();
         timer.cancel();
       } else {
         timer.cancel();
@@ -112,6 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final userId = appState?.firebaseUserAuth?.uid ?? '';
     final firstName = appState?.user?.firstName ?? '';
     final lastName = appState?.user?.lastName ?? '';
+    final imgU = appState?.user?.imgUrl ??'';
 
     return Scaffold(
       backgroundColor: widget._backgroundColor,
@@ -136,19 +134,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: databaseReference
                         .collection('messages')
-                        .orderBy('datetime', descending: false)
+                        .orderBy('datetime',descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                           controller: _controller,
+                          reverse: true,
                           padding: const EdgeInsets.all(15),
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (ctx, i) {
                             if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                              return SentMessageWidget(i: snapshot.data.documents[i].data["msg"],nom:  snapshot.data.documents[i].data["nom"],imgUrl: "",);
+                              return SentMessageWidget(i: snapshot.data.documents[i].data["msg"],nom:  snapshot.data.documents[i].data["nom"],imgUrl: "",imgProfil: snapshot.data.documents[i].data["imgProfil"],help:  snapshot.data.documents[i].data["help"],);
                             } else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                              return ReceivedMessagesWidget(i: snapshot.data.documents[i].data["msg"],imgUrl: "",);
+                              return ReceivedMessagesWidget(i: snapshot.data.documents[i].data["msg"],imgUrl: "",help:  snapshot.data.documents[i].data["help"],);
                             }else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["imgUrl"]!="") {
                               return InkWell(
                                 onTap: (){
@@ -157,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       MaterialPageRoute(
                                           builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
                                 },
-                                child:ReceivedMessagesWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],));
+                                child:ReceivedMessagesWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],help:  snapshot.data.documents[i].data["help"],));
                             }else if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["imgUrl"]!="") {
                               return InkWell(
                                   onTap: (){
@@ -166,7 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         MaterialPageRoute(
                                             builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
                                   },
-                                  child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],
+                                  child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],imgProfil: snapshot.data.documents[i].data["imgProfil"],help:  snapshot.data.documents[i].data["help"],
 
                               ));
                             }
@@ -194,9 +193,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             color: Colors.white,
                           ),
                           onTap: () {
-                            print("hhhhh");
                             setState(() {
-                              chooseFile(userId,firstName,lastName);
+                              chooseFile(userId,firstName,lastName,imgU);
                             });
                           },
                         ),
@@ -237,7 +235,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           onTap: (){
                             if(_sendMsg.text!=""){
-                              onSendMessage(_sendMsg.text,0,userId,firstName,lastName,"");
+                              onSendMessage(_sendMsg.text,0,userId,firstName,lastName,"",imgU);
                             }
                           },
                         ),
@@ -264,9 +262,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _onSentButtonPressed() {
-    print("search button clicked");
-  }
+
 }
 
 List<IconData> icons = [

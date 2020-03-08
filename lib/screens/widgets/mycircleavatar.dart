@@ -22,6 +22,7 @@ class MyCircleAvatar extends StatelessWidget {
         ],
       ),
       child: CircleAvatar(
+        backgroundColor: Colors.transparent,
         backgroundImage: NetworkImage("$imgUrl"),
       ),
     );
