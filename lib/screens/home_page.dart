@@ -42,63 +42,6 @@ class _homePageState extends State<homePage> {
   final databaseReference = Firestore.instance;
   ScrollController _controller = ScrollController();
 
-<<<<<<< Updated upstream
-=======
-
-
-Future _asyncConfirmDialog(BuildContext context,String message ,int number, userId, firstName, lastName) async {
-  return showDialog(
-    context: context,
-    barrierDismissible: false, // user must tap button for close dialog!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        contentPadding: EdgeInsets.all(0.0),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0))
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(height: 40,),
-            Container(
-              child: Text(
-                "Do you need help ?",
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: 30,),
-            Padding(
-              padding: const EdgeInsets.only(left: 3,right: 3),
-              child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: RaisedButton(
-                          color: Colors.grey[200],
-                          child: Text('Cancel'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                    ),
-                    Expanded(
-                      child: RaisedButton(
-                          color: widget._accentColor,
-                          child: Text('Confirm'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onSendMessage(message,number, userId, firstName, lastName);
-                          }),
-                    )
-                  ]),
-            )
-          ],
-        ),
-      );
-    },
-  );
-}
-
-
->>>>>>> Stashed changes
   @override
   void initState() {
 // Get the current time
@@ -107,7 +50,6 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
     var twoHours = now.add(Duration(hours: 54)).difference(now);
     // Get the total number of seconds, 2 minutes for 120 seconds
     seconds = twoHours.inSeconds;
-<<<<<<< Updated upstream
     Timer.periodic(Duration(milliseconds: 100), (timer) {
       if (mounted) {
 
@@ -116,8 +58,6 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
         timer.cancel();
       }
     });
-=======
->>>>>>> Stashed changes
     startTimer();
     super.initState();
   }
@@ -151,7 +91,6 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
     }
   }
 
-<<<<<<< Updated upstream
   Future alert(tableId,userId,firstName,lastName,imgUrl){
     print(imgUrl);
     return showDialog(
@@ -168,20 +107,6 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
       ),
     );
   }
-=======
-  Future<void> onSendMessage(String content, int type,String groupChatId,String firstName,String lastName) async {
-    // type: 0 = text, 1 = image, 2 = sticker
-    if (content.trim() != '') {
-      DocumentReference ref = await databaseReference.collection("messages")
-          .add({
-        'id_user': groupChatId,
-        'msg':content,
-        'datetime':DateTime.now(),
-        'nom':firstName+' '+lastName
-      });
-      Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent+100000));
-      print(ref.documentID);
->>>>>>> Stashed changes
 
 
 
@@ -428,7 +353,6 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
                       children: <Widget>[
                         Expanded(
                             child: StreamBuilder<QuerySnapshot>(
-<<<<<<< Updated upstream
                           stream: databaseReference
                               .collection('messages')
                               .orderBy('datetime',descending: true)
@@ -516,53 +440,6 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
                             }
                           },
                         )),
-=======
-                              stream: databaseReference
-                                  .collection('messages')
-                                  .orderBy('datetime', descending: false)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  //Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent+100000));
-                                  return ListView.builder(
-                                    controller: _controller,
-                                    padding: const EdgeInsets.all(15),
-                                    itemCount: snapshot.data.documents.length,
-                                    itemBuilder: (ctx, i) {
-                                      if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                                        return SentMessageWidget(i: snapshot.data.documents[i].data["msg"],nom:  snapshot.data.documents[i].data["nom"],imgUrl: "",);
-                                      } else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["msg"]!="imgurl") {
-                                        return ReceivedMessagesWidget(i: snapshot.data.documents[i].data["msg"],imgUrl: "",);
-                                      }else if(snapshot.data.documents[i].data['id_user'] == userId && snapshot.data.documents[i].data["imgUrl"]!="") {
-                                        return InkWell(
-                                            onTap: (){
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
-                                            },
-                                            child:ReceivedMessagesWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],));
-                                      }else if (snapshot.data.documents[i].data['id_user'] != userId && snapshot.data.documents[i].data["imgUrl"]!="") {
-                                        return InkWell(
-                                            onTap: (){
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => FullScreenImage(snapshot.data.documents[i].data["imgUrl"])));
-                                            },
-                                            child:SentMessageWidget(i: "",imgUrl: snapshot.data.documents[i].data["imgUrl"],
-
-                                            ));
-                                      }
-                                    },
-                                  );
-                                } else {
-                                  return SizedBox();
-                                }
-                              },
-                            )
-                        ),
->>>>>>> Stashed changes
                       ],
                     ),
                   ),
@@ -580,15 +457,10 @@ Future _asyncConfirmDialog(BuildContext context,String message ,int number, user
           size: 30,
         ),
         onPressed: () {
-<<<<<<< Updated upstream
           /*onSendMessage(
               "Table $table need help", 0, userId, firstName, lastName);
         }, */
           alert(table,userId,firstName,lastName,imgURL);
-=======
-          _asyncConfirmDialog(context,"Table $table need help",0, userId, firstName, lastName);
-         //
->>>>>>> Stashed changes
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
