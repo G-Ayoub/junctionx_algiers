@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../global.dart';
 
@@ -36,7 +37,7 @@ class ReceivedMessagesWidget extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(25),
                     bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25),
+                    topLeft: Radius.circular(25),
                   ),
                 ),
                 child: i!=""?Text(
@@ -44,8 +45,9 @@ class ReceivedMessagesWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.body1.apply(
                         color: help==1?Colors.white:Colors.black,
                       ),
-                ):Image.network(
-                  imgUrl,
+                ):CachedNetworkImage(
+                  imageUrl: imgUrl,
+                  placeholder: (context, url) => new CircularProgressIndicator(),
                   height: 150,
                   width: 200,
                 ),

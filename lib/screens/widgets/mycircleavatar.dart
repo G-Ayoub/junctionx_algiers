@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class MyCircleAvatar extends StatelessWidget {
@@ -23,7 +24,7 @@ class MyCircleAvatar extends StatelessWidget {
       ),
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
-        backgroundImage: NetworkImage("$imgUrl"),
+        backgroundImage: CachedNetworkImageProvider("$imgUrl"),
       ),
     );
   }

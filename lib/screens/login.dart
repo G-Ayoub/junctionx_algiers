@@ -65,156 +65,179 @@ class _loginPageState extends State<loginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingScreen(
-      child: Form(
-        key: _formKey,
-        autovalidate: _autoValidate,
-        child: Scaffold(
-          backgroundColor: _backgroundColor,
-          body: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(22, 57, 22, 0),
-                    child: Text(
-                      "Welcome to Celecom",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                          color: _textColor),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: LoadingScreen(
+        child: Form(
+          key: _formKey,
+          autovalidate: _autoValidate,
+          child: Scaffold(
+            backgroundColor: _backgroundColor,
+            body: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(22, 57, 22, 0),
+                      child: Text(
+                        "Welcome to Celecom",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                            color: _textColor),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(22, 17, 22, 0),
-                    child: Text(
-                      "Continue to sign in",
-                      style:
-                      TextStyle(letterSpacing: 2, color: _textFieldBackgroundColor),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(22, 17, 22, 0),
+                      child: Text(
+                        "Continue to sign in",
+                        style:
+                        TextStyle(letterSpacing: 2, color: _textFieldBackgroundColor),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(22, 37, 22, 0),
-                    child: Theme(
-                      data: new ThemeData(
-                          primaryColor: _accentColor,
-                          hintColor: Colors.white),
-                      child: new TextFormField(
-                        //controller: ndInput,
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _email,
-                          autofocus: false,
-                          validator: Validator.validateEmail,
-                          decoration: InputDecoration(
-                              labelText: "Email address",
-                              filled: true,
-                              fillColor: _textFieldBackgroundColor,
-                              border: OutlineInputBorder(
-                                gapPadding: 0,
-                                borderRadius: BorderRadius.circular(5.0),
-                              ))),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(22, 37, 22, 0),
+                      child: Theme(
+                        data: new ThemeData(
+                            primaryColor: _accentColor,
+                            hintColor: Colors.white),
+                        child: new TextFormField(
+                          //controller: ndInput,
+                            keyboardType: TextInputType.emailAddress,
+                            controller: _email,
+                            autofocus: false,
+                            validator: Validator.validateEmail,
+                            decoration: InputDecoration(
+                                labelText: "Email address",
+                                filled: true,
+                                fillColor: _textFieldBackgroundColor,
+                                border: OutlineInputBorder(
+                                  gapPadding: 0,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ))),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(22, 7, 22, 0),
-                    child: Theme(
-                      data: new ThemeData(
-                          primaryColor: _accentColor,
-                          hintColor: Colors.white),
-                      child: new TextFormField(
-                        //controller: ndInput,
-                        obscureText: true,
-                          controller: _password,
-                          validator: Validator.validatePassword,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                              labelText: "Password",
-                              filled: true,
-                              fillColor: _textFieldBackgroundColor,
-                              border: OutlineInputBorder(
-                                gapPadding: 0,
-                                borderRadius: BorderRadius.circular(5.0),
-                              ))),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(22, 7, 22, 0),
+                      child: Theme(
+                        data: new ThemeData(
+                            primaryColor: _accentColor,
+                            hintColor: Colors.white),
+                        child: new TextFormField(
+                          //controller: ndInput,
+                          obscureText: true,
+                            controller: _password,
+                            validator: Validator.validatePassword,
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                labelText: "Password",
+                                filled: true,
+                                fillColor: _textFieldBackgroundColor,
+                                border: OutlineInputBorder(
+                                  gapPadding: 0,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ))),
+                      ),
                     ),
-                  ),
-                  new Padding(
-                    padding: EdgeInsets.fromLTRB(22, 16, 22, 0),
-                    child: new ButtonTheme(
-                      minWidth: double.infinity,
-                      height: 50,
-                      child: new RaisedButton(
-                        textColor: Colors.white,
-                        color: _accentColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(5.0)),
-                        onPressed: () {
-                          _emailLogin(
-                              email: _email.text, password: _password.text, context: context);
-                         /* Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => homePage()),
-                          );*/
-                        },
-                        child: Text(
-                          "SIGN IN",
-                          style: TextStyle(fontSize: 20),
+                    new Padding(
+                      padding: EdgeInsets.fromLTRB(22, 16, 22, 0),
+                      child: new ButtonTheme(
+                        minWidth: double.infinity,
+                        height: 50,
+                        child: new RaisedButton(
+                          textColor: Colors.white,
+                          color: _accentColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(5.0)),
+                          onPressed: () {
+                            _emailLogin(
+                                email: _email.text, password: _password.text, context: context);
+                           /* Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => homePage()),
+                            );*/
+                          },
+                          child: Text(
+                            "SIGN IN",
+                            style: TextStyle(fontSize: 20),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:[
-                          new Text(
-                            'New user? ',
-                            style: new TextStyle(color: _textColor),
-                          ),
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => signUpPage()),
-                              );
-                            },
-                            child: new Text(
-                              'Sign-up',
-                              style: new TextStyle(color: Colors.blue),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:[
+                            new Text(
+                              'New user? ',
+                              style: new TextStyle(color: _textColor),
                             ),
-                          ),
-                        ]
-                      ),
-                    ),
-
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 15),
-                        child: Image.asset(
-                          "assets/img/junctionx_algiers_white_oneline.png",
-                          width: 200,
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => signUpPage()),
+                                );
+                              },
+                              child: new Text(
+                                'Sign-up',
+                                style: new TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ]
                         ),
                       ),
+
                     ),
-                  )
-                ],
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 15),
+                          child: Image.asset(
+                            "assets/img/junctionx_algiers_white_oneline.png",
+                            width: 200,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ), // This trailing comma makes auto-formatting nicer for build methods.
+            ), // This trailing comma makes auto-formatting nicer for build methods.
+          ),
         ),
+          inAsyncCall: _loadingVisible
       ),
-        inAsyncCall: _loadingVisible
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit the App'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+          new FlatButton(
+            onPressed: () => SystemNavigator.pop(),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false;
   }
 }

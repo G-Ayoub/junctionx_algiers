@@ -122,18 +122,6 @@ class _ChatScreenState extends State<ChatScreen> {
             width: 200),
         backgroundColor: widget._backgroundColor,
         iconTheme: IconThemeData(color: widget._accentColor),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              size: 30,
-              color: Colors.red,
-            ),
-            onPressed: () {
-              StateWidget.of(context).logOutUser();
-            },
-          )
-        ],
       ),
       body: FirebaseMessageWrapper(
         Stack(
@@ -226,6 +214,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     help:
                                         snapshot.data.documents[i].data["help"],
                                   ));
+                            } else {
+                              return Text("No messages");
                             }
                           },
                         );

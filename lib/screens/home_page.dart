@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:junctionx_algiers/models/state.dart';
 import 'package:junctionx_algiers/screens/chatScreen.dart';
 import 'package:junctionx_algiers/screens/event_schedule.dart';
@@ -46,9 +47,14 @@ class _homePageState extends State<homePage> {
   @override
   void initState() {
 // Get the current time
+    var twoHours;
     var now = DateTime.now();
+    var eventTime = DateTime.parse("2020-03-09 20:54:00Z");
     // Get a 2-minute interval
-    var twoHours = now.add(Duration(hours: 54)).difference(now);
+    if(eventTime.isBefore(now))
+    twoHours = eventTime.add(Duration(hours: 53)).difference(now);
+    else twoHours =now.add(Duration(seconds: 1)).difference(now);
+    print(twoHours);
     // Get the total number of seconds, 2 minutes for 120 seconds
     seconds = twoHours.inSeconds;
     Timer.periodic(Duration(milliseconds: 100), (timer) {
@@ -201,427 +207,441 @@ class _homePageState extends State<homePage> {
     final imgURL = appState?.user?.imgUrl ??'';
     final settingsId = appState?.settings?.settingsId ?? '';
 
-    return Scaffold(
-      extendBody: true,
-      appBar: AppBar(
-        title: Center(
-          child: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
-              width: 200),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        extendBody: true,
+        appBar: AppBar(
+          title: Center(
+            child: Image.asset('assets/img/junctionx_algiers_white_oneline.png',
+                width: 200),
+          ),
+          backgroundColor: widget._backgroundColor,
+          automaticallyImplyLeading: false,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.exit_to_app,
+                size: 30,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                StateWidget.of(context).logOutUser();
+              },
+            )
+          ],
+          //iconTheme: IconThemeData(color: widget._accentColor),
         ),
         backgroundColor: widget._backgroundColor,
-        automaticallyImplyLeading: false,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              size: 30,
-              color: Colors.red,
-            ),
-            onPressed: () {
-              StateWidget.of(context).logOutUser();
-            },
-          )
-        ],
-        //iconTheme: IconThemeData(color: widget._accentColor),
-      ),
-      backgroundColor: widget._backgroundColor,
-      body: FirebaseMessageWrapper(
-         SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints:
-                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Text(
-                      "TIME LEFT FOR SUBMISSION",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                          color: widget._accentColor),
+        body: FirebaseMessageWrapper(
+           SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "TIME LEFT FOR SUBMISSION",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                            color: widget._accentColor),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0, left: 22, right: 22),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          LabelText(
-                            label: 'HRS',
-                            value: "$hours",
-                          ),
-                          Text(
-                            ":",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28),
-                          ),
-                          LabelText(label: 'MIN', value: "$minutes"),
-                          Text(
-                            ":",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28),
-                          ),
-                          LabelText(label: 'SEC', value: "$second"),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20),
-                  child: Text(
-                    "NOTIFICATIONS",
-                    style: TextStyle(
-                        color: widget._textColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Container(
-                    height: 110,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0, left: 22, right: 22),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Expanded(
-                          child: StreamBuilder<QuerySnapshot>(
-                            stream: Firestore.instance
-                                .collection('notification')
-                                .orderBy('time', descending: true)
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: snapshot.data.documents.length,
-                                    itemBuilder: (context, i) {
-                                      return createCard(
-                                          snapshot
-                                              .data.documents[i].data['message'],
-                                          snapshot
-                                              .data.documents[i].data['time']);
-                                    });
-                              } else {
-                                return new Center(
-                                  child: snapshot.error!=null?Text(
-                                    snapshot.error,
-                                    style: TextStyle(color: widget._textColor),
-                                  ):Container(),
-                                );
-                              }
-                            },
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            LabelText(
+                              label: 'HRS',
+                              value: "$hours",
+                            ),
+                            Text(
+                              ":",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28),
+                            ),
+                            LabelText(label: 'MIN', value: "$minutes"),
+                            Text(
+                              ":",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28),
+                            ),
+                            LabelText(label: 'SEC', value: "$second"),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, top: 20),
-                  child: Text(
-                    "HUB",
-                    style: TextStyle(
-                        color: widget._textColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child: Text(
+                      "NOTIFICATIONS",
+                      style: TextStyle(
+                          color: widget._textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
                     ),
-                    color: Colors.grey[850],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
                     child: Container(
-                      height: 220,
-                      //color: Colors.grey[850],
+                      height: 110,
                       child: Column(
                         children: <Widget>[
                           Expanded(
-                              child: StreamBuilder<QuerySnapshot>(
-                            stream: databaseReference
-                                .collection('messages')
-                                .orderBy('datetime', descending: true)
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return ListView.builder(
-                                  reverse: true,controller: _controller,
-                                  padding: const EdgeInsets.all(15),
-                                  itemCount: snapshot.data.documents.length,
-                                  itemBuilder: (ctx, i) {
-                                    if (snapshot.data.documents[i]
-                                                .data['id_user'] !=
-                                            userId &&
-                                        snapshot.data.documents[i].data["msg"] !=
-                                            "imgurl") {
-                                      return SentMessageWidget(
-                                        i: snapshot.data.documents[i].data["msg"],
-                                        nom: snapshot
-                                            .data.documents[i].data["nom"],
-                                        imgUrl: "",
-                                      imgProfil: snapshot.data.documents[i].data["imgProfil"],
-                                      help:  snapshot.data.documents[i].data["help"],);
-                                    } else if (snapshot.data.documents[i]
-                                                .data['id_user'] ==
-                                            userId &&
-                                        snapshot.data.documents[i].data["msg"] !=
-                                            "imgurl") {
-                                      return ReceivedMessagesWidget(
-                                        i: snapshot.data.documents[i].data["msg"],
-                                        imgUrl: "",
-                                      help:  snapshot.data.documents[i].data["help"],);
-                                    } else if (snapshot.data.documents[i]
-                                                .data['id_user'] ==
-                                            userId &&
-                                        snapshot.data.documents[i]
-                                                .data["imgUrl"] !=
-                                            "") {
-                                      return InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        FullScreenImage(snapshot
-                                                            .data
-                                                            .documents[i]
-                                                            .data["imgUrl"])));
-                                          },
-                                          child: ReceivedMessagesWidget(
-                                            i: "",
-                                            imgUrl: snapshot
-                                                .data.documents[i].data["imgUrl"],
-                                          help:  snapshot.data.documents[i].data["help"],));
-                                    } else if (snapshot.data.documents[i]
-                                                .data['id_user'] !=
-                                            userId &&
-                                        snapshot.data.documents[i]
-                                                .data["imgUrl"] !=
-                                            "") {
-                                      return InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        FullScreenImage(snapshot
-                                                            .data
-                                                            .documents[i]
-                                                            .data["imgUrl"])));
-                                          },
-                                          child: SentMessageWidget(
-                                            i: "",
-                                            imgUrl: snapshot
-                                                .data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],
-                                          imgProfil: snapshot.data.documents[i].data["imgProfil"],
-                                          help:  snapshot.data.documents[i].data["help"],
-                                          ));
-                                    }
-                                  },
-                                );
-                              } else {
-                                return SizedBox();
-                              }
-                            },
-                          )),
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: Firestore.instance
+                                  .collection('notification')
+                                  .orderBy('time', descending: true)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: snapshot.data.documents.length,
+                                      itemBuilder: (context, i) {
+                                        return createCard(
+                                            snapshot
+                                                .data.documents[i].data['message'],
+                                            snapshot
+                                                .data.documents[i].data['time']);
+                                      });
+                                } else {
+                                  return new Center(
+                                    child: snapshot.error!=null?Text(
+                                      snapshot.error,
+                                      style: TextStyle(color: widget._textColor),
+                                    ):Container(),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child: Text(
+                      "HUB",
+                      style: TextStyle(
+                          color: widget._textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      color: Colors.grey[850],
+                      child: Container(
+                        height: 220,
+                        //color: Colors.grey[850],
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                                child: StreamBuilder<QuerySnapshot>(
+                              stream: databaseReference
+                                  .collection('messages')
+                                  .orderBy('datetime', descending: true)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return ListView.builder(
+                                    reverse: true,controller: _controller,
+                                    padding: const EdgeInsets.all(15),
+                                    itemCount: snapshot.data.documents.length,
+                                    itemBuilder: (ctx, i) {
+                                      if (snapshot.data.documents[i]
+                                                  .data['id_user'] !=
+                                              userId &&
+                                          snapshot.data.documents[i].data["msg"] !=
+                                              "imgurl") {
+                                        return SentMessageWidget(
+                                          i: snapshot.data.documents[i].data["msg"],
+                                          nom: snapshot
+                                              .data.documents[i].data["nom"],
+                                          imgUrl: "",
+                                        imgProfil: snapshot.data.documents[i].data["imgProfil"],
+                                        help:  snapshot.data.documents[i].data["help"],);
+                                      } else if (snapshot.data.documents[i]
+                                                  .data['id_user'] ==
+                                              userId &&
+                                          snapshot.data.documents[i].data["msg"] !=
+                                              "imgurl") {
+                                        return ReceivedMessagesWidget(
+                                          i: snapshot.data.documents[i].data["msg"],
+                                          imgUrl: "",
+                                        help:  snapshot.data.documents[i].data["help"],);
+                                      } else if (snapshot.data.documents[i]
+                                                  .data['id_user'] ==
+                                              userId &&
+                                          snapshot.data.documents[i]
+                                                  .data["imgUrl"] !=
+                                              "") {
+                                        return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FullScreenImage(snapshot
+                                                              .data
+                                                              .documents[i]
+                                                              .data["imgUrl"])));
+                                            },
+                                            child: ReceivedMessagesWidget(
+                                              i: "",
+                                              imgUrl: snapshot
+                                                  .data.documents[i].data["imgUrl"],
+                                            help:  snapshot.data.documents[i].data["help"],));
+                                      } else if (snapshot.data.documents[i]
+                                                  .data['id_user'] !=
+                                              userId &&
+                                          snapshot.data.documents[i]
+                                                  .data["imgUrl"] !=
+                                              "") {
+                                        return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FullScreenImage(snapshot
+                                                              .data
+                                                              .documents[i]
+                                                              .data["imgUrl"])));
+                                            },
+                                            child: SentMessageWidget(
+                                              i: "",
+                                              imgUrl: snapshot
+                                                  .data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],
+                                            imgProfil: snapshot.data.documents[i].data["imgProfil"],
+                                            help:  snapshot.data.documents[i].data["help"],
+                                            ));
+                                      }
+                                    },
+                                  );
+                                } else {
+                                  return SizedBox();
+                                }
+                              },
+                            )),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: widget._accentColor,
+          child: Icon(
+            Icons.info_outline,
+            size: 30,
+          ),
+          onPressed: () {
+            /*onSendMessage(
+                "Table $table need help", 0, userId, firstName, lastName);
+          }, */
+            alert(table,userId,firstName,lastName,imgURL);
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          notchMargin: 10,
+          color: Colors.grey[850],
+          child: Container(
+            width: MediaQuery.of(context).size.width - 20,
+            height: 60,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 0;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EventSchedulePage()));
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.calendar_today,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Schedule',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 1;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatScreen()));
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.chat,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Hub',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
+
+                // Right Tab bar icons
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 2;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NotificationPage()));
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.notifications,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Notifications',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    MaterialButton(
+                      minWidth: 40,
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 3;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePage()));
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.person,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'Profie',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                )
               ],
             ),
           ),
         ),
       ),
-      // This trai
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: widget._accentColor,
-        child: Icon(
-          Icons.info_outline,
-          size: 30,
-        ),
-        onPressed: () {
-          /*onSendMessage(
-              "Table $table need help", 0, userId, firstName, lastName);
-        }, */
-          alert(table,userId,firstName,lastName,imgURL);
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 10,
-        color: Colors.grey[850],
-        child: Container(
-          width: MediaQuery.of(context).size.width - 20,
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  MaterialButton(
-                    minWidth: 40,
-                    onPressed: () {
-                      setState(() {
-                        currentTab = 0;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EventSchedulePage()));
-                      });
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.calendar_today,
-                          color: currentTab == 0
-                              ? widget._accentColor
-                              : Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Schedule',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  MaterialButton(
-                    minWidth: 40,
-                    onPressed: () {
-                      setState(() {
-                        currentTab = 1;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatScreen()));
-                      });
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.chat,
-                          color: currentTab == 1
-                              ? widget._accentColor
-                              : Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Hub',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-
-              // Right Tab bar icons
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  MaterialButton(
-                    minWidth: 40,
-                    onPressed: () {
-                      setState(() {
-                        currentTab = 2;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NotificationPage()));
-                      });
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.notifications,
-                          color: currentTab == 2
-                              ? widget._accentColor
-                              : Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Notifications',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  MaterialButton(
-                    minWidth: 40,
-                    onPressed: () {
-                      setState(() {
-                        currentTab = 3;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePage()));
-                      });
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.person,
-                          color: currentTab == 3
-                              ? widget._accentColor
-                              : Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          'Profie',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit the App'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+          new FlatButton(
+            onPressed: () => SystemNavigator.pop(),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false;
   }
 }
 

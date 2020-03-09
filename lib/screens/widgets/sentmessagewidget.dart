@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../global.dart';
 import 'mycircleavatar.dart';
@@ -32,6 +33,7 @@ class SentMessageWidget extends StatelessWidget {
           ),
           SizedBox(width: 5,),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 "$nom",
@@ -45,7 +47,7 @@ class SentMessageWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: help==1?_accentColor:_textFieldBackgroundColor,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
                     topRight: Radius.circular(25),
                     bottomLeft: Radius.circular(25),
                   ),
@@ -55,8 +57,9 @@ class SentMessageWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.body2.apply(
                         color: Colors.white,
                       ),
-                ):Image.network(
-                  imgUrl,
+                ):CachedNetworkImage(
+                  imageUrl: imgUrl,
+                  placeholder: (context, url) => new CircularProgressIndicator(),
                   height: 150,
                   width: 200,
                 ),
