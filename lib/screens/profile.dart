@@ -1,13 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:junctionx_algiers/models/state.dart';
 import 'package:junctionx_algiers/util/state_widget.dart';
 
+import 'editProfile.dart';
 import 'login.dart';
 import 'widgets/FirebaseMessageWrapper.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ProfilePage();
+}
+
+class _ProfilePage extends State<ProfilePage> {
   final Color _backgroundColor = const Color(0xff1c1e21);
   final Color _accentColor = const Color(0xfff9a61b);
   final Color _textFieldBackgroundColor = const Color(0xff797979);
@@ -30,17 +37,16 @@ class ProfilePage extends StatelessWidget {
         _loadingVisible = false;
       }
     }
-    final userId = appState?.firebaseUserAuth?.uid ?? '';
     final email = appState?.firebaseUserAuth?.email ?? '';
     final firstName = appState?.user?.firstName ?? '';
     final lastName = appState?.user?.lastName ?? '';
     final tableNumber = appState?.user?.tableNumber ?? '';
     final function = appState?.user?.function ?? '';
-    final favmovie = appState?.user?.favMovie ?? '';
+    final favMovie = appState?.user?.favMovie ?? '';
     final visitorNumber = appState?.user?.visitorNumber ?? '';
     final aboutYou = appState?.user?.aboutYou ?? '';
     final imgUrl = appState?.user?.imgUrl ?? '';
-    final settingsId = appState?.settings?.settingsId ?? '';
+
 
     return Scaffold(
       appBar: AppBar(
@@ -50,13 +56,13 @@ class ProfilePage extends StatelessWidget {
         iconTheme: IconThemeData(color: _accentColor),
         actions: <Widget>[
           IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              size: 30,
-              color: Colors.red,
-            ),
+            icon: Icon(Icons.edit, size: 30, color: _accentColor),
             onPressed: () {
-              StateWidget.of(context).logOutUser();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfile()),
+              );
+              //StateWidget.of(context).logOutUser();
             },
           )
         ],
@@ -172,7 +178,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      "$favmovie",
+                      "$favMovie",
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

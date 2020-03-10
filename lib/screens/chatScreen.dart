@@ -160,10 +160,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                     userId &&
                                 snapshot.data.documents[i].data["msg"] !=
                                     "imgurl") {
-                              return ReceivedMessagesWidget(
-                                i: snapshot.data.documents[i].data["msg"],
-                                imgUrl: "",
-                                help: snapshot.data.documents[i].data["help"],
+                              return InkWell(
+                                onLongPress: () => _showDialog(snapshot.data.documents[i]),
+                                child: ReceivedMessagesWidget(
+                                  i: snapshot.data.documents[i].data["msg"],
+                                  imgUrl: "",
+                                  help: snapshot.data.documents[i].data["help"],
+                                ),
                               );
                             } else if (snapshot
                                         .data.documents[i].data['id_user'] ==
@@ -181,6 +184,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     .documents[i]
                                                     .data["imgUrl"])));
                                   },
+                                  onLongPress: () => _showDialog(snapshot.data.documents[i]),
                                   child: ReceivedMessagesWidget(
                                     i: "",
                                     imgUrl: snapshot
@@ -204,6 +208,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     .documents[i]
                                                     .data["imgUrl"])));
                                   },
+                                  //onLongPress: () => _showDialog(snapshot.data.documents[i]),
                                   child: SentMessageWidget(
                                     i: "",
                                     imgUrl: snapshot
@@ -299,6 +304,39 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
+  void _showDialog(DocumentSnapshot document) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Delete message"),
+          content: new Text("Do you want to delete this message?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                databaseReference
+                    .collection('messages').document(document.documentID).delete();
+                Navigator.of(context).pop();
+                //Navigator.of(context).pop(ConfirmAction.ACCEPT);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 List<IconData> icons = [

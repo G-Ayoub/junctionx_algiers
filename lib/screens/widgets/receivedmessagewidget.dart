@@ -7,13 +7,13 @@ class ReceivedMessagesWidget extends StatelessWidget {
   final Color _textFieldBackgroundColor = const Color(0xff797979);
   final Color _accentColor = const Color(0xfff9a61b);
   final String i;
-  final String nom;
+  //final String nom;
   final String imgUrl;
   final int help;
   const ReceivedMessagesWidget({
     Key key,
     @required this.i,
-    @required this.nom,
+    //@required this.nom,
     @required this.imgUrl,
     @required this.help,
   }) : super(key: key);

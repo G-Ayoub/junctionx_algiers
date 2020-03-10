@@ -182,6 +182,7 @@ class _homePageState extends State<homePage> {
   Widget build(BuildContext context) {
 
     appState = StateWidget.of(context).state;
+    StateWidget.of(context).initUser();
     if (!appState.isLoading &&
         (appState.firebaseUserAuth == null ||
             appState.user == null ||
@@ -223,7 +224,7 @@ class _homePageState extends State<homePage> {
               icon: Icon(
                 Icons.exit_to_app,
                 size: 30,
-                color: Colors.red,
+                color: _accentColor,
               ),
               onPressed: () {
                 StateWidget.of(context).logOutUser();

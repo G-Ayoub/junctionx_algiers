@@ -14,7 +14,7 @@ import 'package:path/path.dart' as Path;
 import 'login.dart';
 
 class signup3Page extends StatefulWidget {
-  String email,
+  final String email,
       password,
       firstName,
       lastName,

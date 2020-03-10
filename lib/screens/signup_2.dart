@@ -8,7 +8,7 @@ import 'package:junctionx_algiers/screens/widgets/loading.dart';
 import 'package:junctionx_algiers/util/auth.dart';
 
 class signup2Page extends StatefulWidget {
-  String email,password,firstName,lastName;
+  final String email,password,firstName,lastName;
   signup2Page(this.email,this.password,this.firstName,this.lastName);
 
   @override
