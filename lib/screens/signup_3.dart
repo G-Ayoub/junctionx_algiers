@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:junctionx_algiers/models/user.dart';
 import 'package:junctionx_algiers/screens/widgets/loading.dart';
 import 'package:junctionx_algiers/util/auth.dart';
+import 'package:junctionx_algiers/util/image_picker_handler.dart';
 import 'package:path/path.dart' as Path;
 
 import 'login.dart';
@@ -38,12 +39,15 @@ class signup3Page extends StatefulWidget {
   _signup3PageState createState() => _signup3PageState();
 }
 
-class _signup3PageState extends State<signup3Page> {
+class _signup3PageState extends State<signup3Page> with TickerProviderStateMixin,ImagePickerListener{
   final Color _backgroundColor = const Color(0xff1c1e21);
   final Color _textColor = const Color(0xfff9fcfe);
   final Color _accentColor = const Color(0xfff9a61b);
   final Color _textFieldBackgroundColor = const Color(0xff797979);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  AnimationController _controller;
+  ImagePickerHandler imagePicker;
 
   bool _loadingVisible = false;
 
@@ -55,6 +59,25 @@ class _signup3PageState extends State<signup3Page> {
 
   File _image;
   String _uploadedFileURL;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    imagePicker=new ImagePickerHandler(this,_controller);
+    imagePicker.init();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future chooseFile() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
@@ -177,7 +200,8 @@ class _signup3PageState extends State<signup3Page> {
                       ? Image.file(_image)
                       : Icon(Icons.account_circle),
                   onPressed: () {
-                    chooseFile();
+                    //chooseFile();
+                    imagePicker.showDialog(context);
                   },
                 ),
               ),
@@ -218,5 +242,12 @@ class _signup3PageState extends State<signup3Page> {
         )),
       ),
     );
+  }
+
+  @override
+  userImage(File _image) {
+    setState(() {
+      this._image = _image;
+    });
   }
 }
