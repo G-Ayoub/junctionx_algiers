@@ -469,14 +469,6 @@ class _EditProfileState3 extends State<EditProfile3>
     super.dispose();
   }
 
-  Future chooseFile() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-      });
-    });
-  }
-
   Future uploadFile() async {
     await _changeLoadingVisible();
     if (_image != null) {
@@ -488,7 +480,7 @@ class _EditProfileState3 extends State<EditProfile3>
       _uploadedFileURL = dowUrl.toString();
       print('File Uploaded');
     }
-    _emailSignUp(
+    _editingProfile(
       firstName: widget.firstName,
       lastName: widget.lastName,
       aboutYou: widget.aboutYou,
@@ -500,7 +492,7 @@ class _EditProfileState3 extends State<EditProfile3>
     );
   }
 
-  void _emailSignUp(
+  void _editingProfile(
       {String firstName,
       String lastName,
       String email,
@@ -522,6 +514,21 @@ class _EditProfileState3 extends State<EditProfile3>
     }).catchError((e) {
       print(e);
     });
+
+    Firestore.instance
+        .collection('messages')
+        .where('id_user', isEqualTo: userId)
+        .snapshots()
+        .listen((data) => data.documents.forEach((doc) {
+              //print(doc.documentID);
+              Firestore.instance.collection('messages').document(doc.documentID).updateData({
+                'nom' : firstName + " " + lastName,
+                'imgProfil' : profileImg,
+              }).catchError((e) {
+                print(e);
+              });
+            }));
+
     User user = await Auth.getUserLocal();
     user.firstName = firstName;
     user.lastName = lastName;
@@ -530,8 +537,6 @@ class _EditProfileState3 extends State<EditProfile3>
     user.function = function;
     user.tableNumber = tableNumber;
     user.imgUrl = profileImg;
-    print(firstName);
-    print(user.firstName);
     Auth.storeUserLocal(user);
     Navigator.push(
       context,
@@ -543,10 +548,10 @@ class _EditProfileState3 extends State<EditProfile3>
     await Future.delayed(Duration(milliseconds: 100));
     appState = StateWidget.of(context).state;
     userId = appState?.user?.userId ?? '';
-    print(userId);
+    //print(userId);
     setState(() {
       _uploadedFileURL = appState?.user?.imgUrl ?? '';
-      print(_uploadedFileURL);
+      //print(_uploadedFileURL);
     });
   }
 

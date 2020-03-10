@@ -19,7 +19,7 @@ class Auth {
   static void addUserSettingsDB(User user) async {
     checkUserExist(user.userId).then((value) {
       if (!value) {
-        print("user ${user.firstName} ${user.email} added");
+        //print("user ${user.firstName} ${user.email} added");
         Firestore.instance
             .document("users/${user.userId}")
             .setData(user.toJson());
@@ -27,7 +27,7 @@ class Auth {
           settingsId: user.userId,
         ));
       } else {
-        print("user ${user.firstName} ${user.email} exists");
+        //print("user ${user.firstName} ${user.email} exists");
       }
     });
   }
@@ -54,8 +54,8 @@ class Auth {
   }
 
   static Future<String> signIn(String email, String password) async {
-    print(email);
-    print(password);
+    //print(email);
+    //print(password);
     AuthResult user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     return user.user.uid;

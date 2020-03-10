@@ -267,12 +267,25 @@ class _ChatScreenState extends State<ChatScreen> {
                                 decoration: InputDecoration(
                                   hintText: "Type Something...",
                                   border: InputBorder.none,
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      if (_sendMsg.text != "") {
+                                        onSendMessage(_sendMsg.text, 0, userId,
+                                            firstName, lastName, "", imgU);
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  )
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        Container(
+                        /*Container(
                           padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                               color: widget._textFieldBackgroundColor,
@@ -292,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               }
                             },
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                   )

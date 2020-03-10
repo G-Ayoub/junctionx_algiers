@@ -99,7 +99,7 @@ class _homePageState extends State<homePage> {
   }
 
   Future alert(tableId,userId,firstName,lastName,imgUrl){
-    print(imgUrl);
+    //print(imgUrl);
     return showDialog(
       context: context,
       builder: (BuildContext context) => CustomDialog(
