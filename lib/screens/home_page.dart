@@ -48,13 +48,13 @@ class _homePageState extends State<homePage> {
 // Get the current time
     var twoHours;
     var now = DateTime.now();
-    var eventTime = DateTime.parse("2020-03-09 20:54:00Z");
+    var eventTime = DateTime.parse("2020-03-19 17:00:00Z");
     // Get a 2-minute interval
     if (eventTime.isBefore(now))
       twoHours = eventTime.add(Duration(hours: 53)).difference(now);
     else
       twoHours = now.add(Duration(seconds: 1)).difference(now);
-    print(twoHours);
+    //print(twoHours);
     // Get the total number of seconds, 2 minutes for 120 seconds
     seconds = twoHours.inSeconds;
     Timer.periodic(Duration(milliseconds: 100), (timer) {
