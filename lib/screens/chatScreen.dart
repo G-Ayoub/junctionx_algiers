@@ -150,6 +150,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               return SentMessageWidget(
                                 i: snapshot.data.documents[i].data["msg"],
                                 nom: snapshot.data.documents[i].data["nom"],
+                                userId: snapshot.data.documents[i].data['id_user'],
                                 imgUrl: "",
                                 imgProfil: snapshot
                                     .data.documents[i].data["imgProfil"],
@@ -214,6 +215,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     imgUrl: snapshot
                                         .data.documents[i].data["imgUrl"],
                                     nom: snapshot.data.documents[i].data["nom"],
+                                    userId: snapshot.data.documents[i].data['id_user'],
                                     imgProfil: snapshot
                                         .data.documents[i].data["imgProfil"],
                                     help:

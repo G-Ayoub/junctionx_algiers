@@ -17,7 +17,6 @@ import 'widgets/FirebaseMessageWrapper.dart';
 import 'widgets/widgets.dart';
 import '../screens/widgets/full_image.dart';
 
-
 class homePage extends StatefulWidget {
   final Color _backgroundColor = const Color(0xff1c1e21);
   final Color _textColor = const Color(0xfff9fcfe);
@@ -51,15 +50,15 @@ class _homePageState extends State<homePage> {
     var now = DateTime.now();
     var eventTime = DateTime.parse("2020-03-09 20:54:00Z");
     // Get a 2-minute interval
-    if(eventTime.isBefore(now))
-    twoHours = eventTime.add(Duration(hours: 53)).difference(now);
-    else twoHours =now.add(Duration(seconds: 1)).difference(now);
+    if (eventTime.isBefore(now))
+      twoHours = eventTime.add(Duration(hours: 53)).difference(now);
+    else
+      twoHours = now.add(Duration(seconds: 1)).difference(now);
     print(twoHours);
     // Get the total number of seconds, 2 minutes for 120 seconds
     seconds = twoHours.inSeconds;
     Timer.periodic(Duration(milliseconds: 100), (timer) {
       if (mounted) {
-
         timer.cancel();
       } else {
         timer.cancel();
@@ -98,24 +97,22 @@ class _homePageState extends State<homePage> {
     }
   }
 
-  Future alert(tableId,userId,firstName,lastName,imgUrl){
+  Future alert(tableId, userId, firstName, lastName, imgUrl) {
     //print(imgUrl);
     return showDialog(
       context: context,
       builder: (BuildContext context) => CustomDialog(
         title: "Do you need help ?",
         tableId: tableId,
-        userId:userId,
-        firstName:firstName,
-        lastName:lastName,
+        userId: userId,
+        firstName: firstName,
+        lastName: lastName,
         buttonText: "Okay",
         imgProfil: imgUrl,
         icon: Icons.info_outline,
       ),
     );
   }
-
-
 
   Widget createCard(String notificationMsg, Timestamp notificationTime) {
     return Row(
@@ -145,12 +142,14 @@ class _homePageState extends State<homePage> {
                             fontSize: 10),
                       ),
                       Spacer(),
-                      notificationTime!=null?Text(
-                        Validator.readTimestamp(notificationTime.seconds),
-                        style: TextStyle(
-                            color: widget._textFieldBackgroundColor,
-                            fontSize: 10),
-                      ):Container(),
+                      notificationTime != null
+                          ? Text(
+                              Validator.readTimestamp(notificationTime.seconds),
+                              style: TextStyle(
+                                  color: widget._textFieldBackgroundColor,
+                                  fontSize: 10),
+                            )
+                          : Container(),
                     ],
                   ),
                   SizedBox(
@@ -159,13 +158,15 @@ class _homePageState extends State<homePage> {
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: notificationMsg!=""&&notificationMsg!=null?Text(
-                        "$notificationMsg",
-                        style: TextStyle(
-                          color: widget._textColor,
-                          fontSize: 14,
-                        ),
-                      ):Container(),
+                      child: notificationMsg != "" && notificationMsg != null
+                          ? Text(
+                              "$notificationMsg",
+                              style: TextStyle(
+                                color: widget._textColor,
+                                fontSize: 14,
+                              ),
+                            )
+                          : Container(),
                     ),
                   ),
                 ],
@@ -177,10 +178,8 @@ class _homePageState extends State<homePage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     appState = StateWidget.of(context).state;
     StateWidget.of(context).initUser();
     if (!appState.isLoading &&
@@ -199,13 +198,12 @@ class _homePageState extends State<homePage> {
     int minutes = seconds % 3600 ~/ 60;
     int second = seconds % 60;
 
-
     final userId = appState?.firebaseUserAuth?.uid ?? '';
     final email = appState?.firebaseUserAuth?.email ?? '';
     final lastName = appState?.user?.lastName ?? '';
     final firstName = appState?.user?.firstName ?? '';
     final table = appState?.user?.tableNumber ?? '';
-    final imgURL = appState?.user?.imgUrl ??'';
+    final imgURL = appState?.user?.imgUrl ?? '';
     final settingsId = appState?.settings?.settingsId ?? '';
 
     return WillPopScope(
@@ -235,7 +233,7 @@ class _homePageState extends State<homePage> {
         ),
         backgroundColor: widget._backgroundColor,
         body: FirebaseMessageWrapper(
-           SingleChildScrollView(
+          SingleChildScrollView(
             child: ConstrainedBox(
               constraints:
                   BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
@@ -259,7 +257,8 @@ class _homePageState extends State<homePage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 16.0, left: 22, right: 22),
+                    padding:
+                        const EdgeInsets.only(top: 16.0, left: 22, right: 22),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
@@ -320,17 +319,20 @@ class _homePageState extends State<homePage> {
                                       itemCount: snapshot.data.documents.length,
                                       itemBuilder: (context, i) {
                                         return createCard(
-                                            snapshot
-                                                .data.documents[i].data['message'],
-                                            snapshot
-                                                .data.documents[i].data['time']);
+                                            snapshot.data.documents[i]
+                                                .data['message'],
+                                            snapshot.data.documents[i]
+                                                .data['time']);
                                       });
                                 } else {
                                   return new Center(
-                                    child: snapshot.error!=null?Text(
-                                      snapshot.error,
-                                      style: TextStyle(color: widget._textColor),
-                                    ):Container(),
+                                    child: snapshot.error != null
+                                        ? Text(
+                                            snapshot.error,
+                                            style: TextStyle(
+                                                color: widget._textColor),
+                                          )
+                                        : Container(),
                                   );
                                 }
                               },
@@ -351,7 +353,8 @@ class _homePageState extends State<homePage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 10),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -371,31 +374,43 @@ class _homePageState extends State<homePage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return ListView.builder(
-                                    reverse: true,controller: _controller,
+                                    reverse: true,
+                                    controller: _controller,
                                     padding: const EdgeInsets.all(15),
                                     itemCount: snapshot.data.documents.length,
                                     itemBuilder: (ctx, i) {
                                       if (snapshot.data.documents[i]
                                                   .data['id_user'] !=
                                               userId &&
-                                          snapshot.data.documents[i].data["msg"] !=
+                                          snapshot.data.documents[i]
+                                                  .data["msg"] !=
                                               "imgurl") {
                                         return SentMessageWidget(
-                                          i: snapshot.data.documents[i].data["msg"],
+                                          i: snapshot
+                                              .data.documents[i].data["msg"],
                                           nom: snapshot
                                               .data.documents[i].data["nom"],
+                                          userId: snapshot
+                                              .data.documents[i].data["id_user"],
                                           imgUrl: "",
-                                        imgProfil: snapshot.data.documents[i].data["imgProfil"],
-                                        help:  snapshot.data.documents[i].data["help"],);
+                                          imgProfil: snapshot.data.documents[i]
+                                              .data["imgProfil"],
+                                          help: snapshot
+                                              .data.documents[i].data["help"],
+                                        );
                                       } else if (snapshot.data.documents[i]
                                                   .data['id_user'] ==
                                               userId &&
-                                          snapshot.data.documents[i].data["msg"] !=
+                                          snapshot.data.documents[i]
+                                                  .data["msg"] !=
                                               "imgurl") {
                                         return ReceivedMessagesWidget(
-                                          i: snapshot.data.documents[i].data["msg"],
+                                          i: snapshot
+                                              .data.documents[i].data["msg"],
                                           imgUrl: "",
-                                        help:  snapshot.data.documents[i].data["help"],);
+                                          help: snapshot
+                                              .data.documents[i].data["help"],
+                                        );
                                       } else if (snapshot.data.documents[i]
                                                   .data['id_user'] ==
                                               userId &&
@@ -409,15 +424,18 @@ class _homePageState extends State<homePage> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           FullScreenImage(snapshot
-                                                              .data
-                                                              .documents[i]
-                                                              .data["imgUrl"])));
+                                                                  .data
+                                                                  .documents[i]
+                                                                  .data[
+                                                              "imgUrl"])));
                                             },
                                             child: ReceivedMessagesWidget(
                                               i: "",
-                                              imgUrl: snapshot
-                                                  .data.documents[i].data["imgUrl"],
-                                            help:  snapshot.data.documents[i].data["help"],));
+                                              imgUrl: snapshot.data.documents[i]
+                                                  .data["imgUrl"],
+                                              help: snapshot.data.documents[i]
+                                                  .data["help"],
+                                            ));
                                       } else if (snapshot.data.documents[i]
                                                   .data['id_user'] !=
                                               userId &&
@@ -431,17 +449,28 @@ class _homePageState extends State<homePage> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           FullScreenImage(snapshot
-                                                              .data
-                                                              .documents[i]
-                                                              .data["imgUrl"])));
+                                                                  .data
+                                                                  .documents[i]
+                                                                  .data[
+                                                              "imgUrl"])));
                                             },
                                             child: SentMessageWidget(
                                               i: "",
-                                              imgUrl: snapshot
-                                                  .data.documents[i].data["imgUrl"],nom:  snapshot.data.documents[i].data["nom"],
-                                            imgProfil: snapshot.data.documents[i].data["imgProfil"],
-                                            help:  snapshot.data.documents[i].data["help"],
+                                              userId: snapshot.data.documents[i]
+                                                  .data['id_user'],
+                                              imgUrl: snapshot.data.documents[i]
+                                                  .data["imgUrl"],
+                                              nom: snapshot.data.documents[i]
+                                                  .data["nom"],
+                                              imgProfil: snapshot
+                                                  .data
+                                                  .documents[i]
+                                                  .data["imgProfil"],
+                                              help: snapshot.data.documents[i]
+                                                  .data["help"],
                                             ));
+                                      } else {
+                                        return Text("No messages");
                                       }
                                     },
                                   );
@@ -470,7 +499,7 @@ class _homePageState extends State<homePage> {
             /*onSendMessage(
                 "Table $table need help", 0, userId, firstName, lastName);
           }, */
-            alert(table,userId,firstName,lastName,imgURL);
+            alert(table, userId, firstName, lastName, imgURL);
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -627,22 +656,23 @@ class _homePageState extends State<homePage> {
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit the App'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No'),
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit the App'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => SystemNavigator.pop(),
+                child: new Text('Yes'),
+              ),
+            ],
           ),
-          new FlatButton(
-            onPressed: () => SystemNavigator.pop(),
-            child: new Text('Yes'),
-          ),
-        ],
-      ),
-    )) ?? false;
+        )) ??
+        false;
   }
 }
 
@@ -683,22 +713,30 @@ class LabelText extends StatelessWidget {
     );
   }
 }
+
 class CustomDialog extends StatelessWidget {
-  final String title,tableId,userId,firstName,lastName, buttonText,imgProfil;
+  final String title,
+      tableId,
+      userId,
+      firstName,
+      lastName,
+      buttonText,
+      imgProfil;
   final IconData icon;
   final databaseReference = Firestore.instance;
+
   Future<void> onSendMessage(String content, int type, String groupChatId,
-      String firstName, String lastName,String imgPro) async {
+      String firstName, String lastName, String imgPro) async {
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       DocumentReference ref =
-      await databaseReference.collection("messages").add({
+          await databaseReference.collection("messages").add({
         'id_user': groupChatId,
         'msg': content,
         'datetime': DateTime.now(),
         'nom': firstName + ' ' + lastName,
-        'imgProfil':imgPro,
-        'help':1
+        'imgProfil': imgPro,
+        'help': 1
       });
       //   listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
@@ -716,6 +754,7 @@ class CustomDialog extends StatelessWidget {
     @required this.imgProfil,
     this.icon,
   });
+
   dialogContent(BuildContext context) {
     return Stack(
       children: <Widget>[
@@ -755,34 +794,41 @@ class CustomDialog extends StatelessWidget {
                     Expanded(
                       child: MaterialButton(
                         shape: new RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0)),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16.0)),
                         ),
                         color: Colors.grey,
                         onPressed: () {
                           Navigator.of(context).pop(); // To close the dialog
                         },
-                        child: Text("Cancel",style: TextStyle(fontSize: 18),),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(fontSize: 18),
+                        ),
                       ),
                     ),
                     Expanded(
                       child: MaterialButton(
                         shape: new RoundedRectangleBorder(
-                          borderRadius:  BorderRadius.only(bottomRight: Radius.circular(16.0)),
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(16.0)),
                         ),
                         color: Color(0xfff9a61b),
                         onPressed: () {
                           Navigator.of(context).pop(); // To close the dialog
-                          onSendMessage(
-                              "Table $tableId need help", 0, userId, firstName, lastName,imgProfil);
+                          onSendMessage("Table $tableId need help", 0, userId,
+                              firstName, lastName, imgProfil);
                         },
-                        child: Text("Confirm",style: TextStyle(color: Colors.white,fontSize: 18),),
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ],
-
           ),
         ),
         Positioned(
@@ -790,13 +836,18 @@ class CustomDialog extends StatelessWidget {
           right: Consts.padding,
           child: CircleAvatar(
             radius: Consts.avatarRadius,
-            backgroundColor:Color(0xfff9a61b),
-            child: Icon(icon,color: Colors.white,size: 40,),
+            backgroundColor: Color(0xfff9a61b),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 40,
+            ),
           ),
         ),
       ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -809,6 +860,7 @@ class CustomDialog extends StatelessWidget {
     );
   }
 }
+
 class Consts {
   Consts._();
 
