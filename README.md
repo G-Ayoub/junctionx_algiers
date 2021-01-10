@@ -1,10 +1,10 @@
 <h1 align="center">Welcome to JunctionX Algiers 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.2-blue.svg?cacheSeconds=2592000" />
-  <a href="https://github.com/G-Ayoub/junctionx_algiers/edit/master/README.md" target="_blank">
+  <a href="https://github.com/G-Ayoub/junctionx_algiers/blob/master/README.md" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
-  <a href="https://github.com/kefranabg/readme-md-generator/graphs/commit-activity" target="_blank">
+  <a href="https://github.com/G-Ayoub/junctionx_algiers/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
   <a href="https://github.com/G-Ayoub/junctionx_algiers/blob/master/LICENSE">
