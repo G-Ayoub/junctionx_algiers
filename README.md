@@ -1,16 +1,51 @@
-# junctionx_algiers
+<h1 align="center">Welcome to JunctionX Algiers 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.2-blue.svg?cacheSeconds=2592000" />
+  <a href="https://github.com/kefranabg/readme-md-generator#readme" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/kefranabg/readme-md-generator/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
+  <a href="https://github.com/kefranabg/readme-md-generator/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/github/license/G-Ayoub/JunctionX Algiers" />
+  </a>
+</p>
 
-junctionX Algiers mobile application.
+> JunctionX Algiers Mobile App
 
-## Getting Started
+### 🏠 [Homepage](https://github.com/G-Ayoub/junctionx_algiers)
 
-This project is a starting point for a Flutter application.
+## Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter 
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Usage
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+flutter run
+```
+
+## Author
+
+👤 **Ayoub GHAFFOUR**
+
+* Github: [@G-Ayoub](https://github.com/G-Ayoub)
+
+👤 **Mehdi GHOMARI**
+
+* Github: [@mehdizse](https://github.com/mehdizse)
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/kefranabg/readme-md-generator/issues). You can also take a look at the [contributing guide](https://github.com/kefranabg/readme-md-generator/blob/master/CONTRIBUTING.md).
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+Copyright © 2021 [Ayoub GHAFFOUR](https://github.com/G-Ayoub).<br />
+This project is [MIT](https://github.com/kefranabg/readme-md-generator/blob/master/LICENSE) licensed.
+
